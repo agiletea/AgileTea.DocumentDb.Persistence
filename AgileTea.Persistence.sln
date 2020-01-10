@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29521.150
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AgileTea.Persistence.Common", "src\AgileTea.Persistence.Common\AgileTea.Persistence.Common.csproj", "{B7B6FB8F-C23D-4049-A6D6-DDEA257F632F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{53C54ECA-4277-4E56-8684-B1C8DAFF63F9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AgileTea.Persistence.Common.Tests", "src\AgileTea.Persistence.Common.Tests\AgileTea.Persistence.Common.Tests.csproj", "{D6BD1AB0-13D0-4E7D-8962-CC753FEF412B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AgileTea.Persistence.Mongo", "src\AgileTea.Persistence.Mongo\AgileTea.Persistence.Mongo.csproj", "{601F3775-50D3-4DF8-ADBD-FC1310F6F8A2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AgileTea.Persistence.Mongo.Tests", "src\AgileTea.Persistence.Mongo.Tests\AgileTea.Persistence.Mongo.Tests.csproj", "{6BFC49F6-C7A5-473B-9244-824BB74153EA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F2418585-3B24-4D52-9985-C5C54492B441}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B7B6FB8F-C23D-4049-A6D6-DDEA257F632F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7B6FB8F-C23D-4049-A6D6-DDEA257F632F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7B6FB8F-C23D-4049-A6D6-DDEA257F632F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7B6FB8F-C23D-4049-A6D6-DDEA257F632F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6BD1AB0-13D0-4E7D-8962-CC753FEF412B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6BD1AB0-13D0-4E7D-8962-CC753FEF412B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6BD1AB0-13D0-4E7D-8962-CC753FEF412B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6BD1AB0-13D0-4E7D-8962-CC753FEF412B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{601F3775-50D3-4DF8-ADBD-FC1310F6F8A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{601F3775-50D3-4DF8-ADBD-FC1310F6F8A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{601F3775-50D3-4DF8-ADBD-FC1310F6F8A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{601F3775-50D3-4DF8-ADBD-FC1310F6F8A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BFC49F6-C7A5-473B-9244-824BB74153EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BFC49F6-C7A5-473B-9244-824BB74153EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BFC49F6-C7A5-473B-9244-824BB74153EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BFC49F6-C7A5-473B-9244-824BB74153EA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B7B6FB8F-C23D-4049-A6D6-DDEA257F632F} = {53C54ECA-4277-4E56-8684-B1C8DAFF63F9}
+		{D6BD1AB0-13D0-4E7D-8962-CC753FEF412B} = {53C54ECA-4277-4E56-8684-B1C8DAFF63F9}
+		{601F3775-50D3-4DF8-ADBD-FC1310F6F8A2} = {53C54ECA-4277-4E56-8684-B1C8DAFF63F9}
+		{6BFC49F6-C7A5-473B-9244-824BB74153EA} = {53C54ECA-4277-4E56-8684-B1C8DAFF63F9}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ECD72F42-50EC-40EE-B19F-300BEA7F28D8}
+	EndGlobalSection
+EndGlobal
