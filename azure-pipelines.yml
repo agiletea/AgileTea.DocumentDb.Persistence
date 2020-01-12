@@ -11,24 +11,12 @@ trigger:
 pool:
   vmImage: 'windows-latest'
 
-# these variables are available throughout the build file
-# just the build configuration is defined, in this case we are building Release packages
-variables:
-  buildConfiguration: 'Release'
-
 steps:
-
-- task: UseDotNet@2
-  displayName: install dotnet 3.x
-  inputs:
-    packageType: 'sdk'
-    version: '3.x' 
 
 - task: DotNetCoreCLI@2
   displayName: dotnet build
   inputs:
     command: build
-    configuration: Release
     
 - task: DotNetCoreCLI@2
   displayName: dotnet test
@@ -39,10 +27,8 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: dotnet pack
   inputs:
-    command: 'pack'
-    packagesToPack: 'src/AgileTea.Persistence.Mongo/AgileTea.Persistence.Mongo.csproj'
+    command: pack
     packDirectory: '$(Build.ArtifactStagingDirectory)/packages'
-    versioningScheme: 'off'
 
 - task: PublishBuildArtifacts@1
   displayName: publish artifacts
