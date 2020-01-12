@@ -28,7 +28,7 @@ steps:
   displayName: dotnet build
   inputs:
     command: build
-    
+    configuration: Release
     
 - task: DotNetCoreCLI@2
   displayName: dotnet test
@@ -36,6 +36,13 @@ steps:
     command: test
     projects: '**/*[Tt]ests.csproj'
 
+- task: DotNetCoreCLI@2
+  displayName: dotnet pack
+  inputs:
+    command: 'pack'
+    packagesToPack: 'src/AgileTea.Persistence.Mongo/AgileTea.Persistence.Mongo.csproj'
+    packDirectory: '$(Build.ArtifactStagingDirectory)/packages'
+    versioningScheme: 'off'
 
 - task: PublishBuildArtifacts@1
   displayName: publish artifacts
