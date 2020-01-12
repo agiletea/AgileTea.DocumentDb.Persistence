@@ -39,9 +39,10 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: dotnet pack
   inputs:
-    command: pack
-    configuration: Release
+    command: 'pack'
     packDirectory: '$(Build.ArtifactStagingDirectory)/packages'
+    nobuild: true
+    versioningScheme: 'off'
 
 
 - task: PublishBuildArtifacts@1
