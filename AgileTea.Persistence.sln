@@ -14,6 +14,13 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AgileTea.Persistence.Mongo.Tests", "src\AgileTea.Persistence.Mongo.Tests\AgileTea.Persistence.Mongo.Tests.csproj", "{6BFC49F6-C7A5-473B-9244-824BB74153EA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F2418585-3B24-4D52-9985-C5C54492B441}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		CodeAnalysisRuleSet.ruleset = CodeAnalysisRuleSet.ruleset
+		LICENSE = LICENSE
+		src\AgileTea.Persistence.Mongo\NugetIcon.png = src\AgileTea.Persistence.Mongo\NugetIcon.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -5,7 +5,16 @@
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
     <CodeAnalysisRuleSet>..\..\CodeAnalysisRuleSet.ruleset</CodeAnalysisRuleSet>
-    <UserSecretsId>695fa914-343d-49b3-8420-528108fb71df</UserSecretsId>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Description>Sets up connection to a Mongo Database with simple mappings and repository pattern approach</Description>
+    <PackageTags>MongoDb</PackageTags>
+    <PackageProjectUrl>https://github.com/agiletea/AgileTea.DocumentDb.Persistence</PackageProjectUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/agiletea/AgileTea.DocumentDb.Persistence</RepositoryUrl>
+    <Company>AgileTea</Company>
+    <Authors>Benjamin Jones (ben@agiletea.com)</Authors>
+    <PackageIconUrl>https://github.com/agiletea/AgileTea.DocumentDb.Persistence/blob/master/NugetIcon.png?raw=true</PackageIconUrl>
   </PropertyGroup>
 
   <ItemGroup>
