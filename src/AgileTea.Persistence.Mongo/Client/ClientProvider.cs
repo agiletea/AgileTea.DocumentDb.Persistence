@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using AgileTea.Persistence.Mongo.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
 namespace AgileTea.Persistence.Mongo.Client
@@ -9,16 +9,16 @@ namespace AgileTea.Persistence.Mongo.Client
     [ExcludeFromCodeCoverage]
     public sealed class ClientProvider : IClientProvider
     {
-        private readonly IAppSettingsProvider appSettingsProvider;
+        private readonly IOptionsMonitor<MongoOptions> options;
         private readonly ILogger logger;
         private Lazy<IMongoClient>? client;
         private Lazy<IMongoDatabase>? database;
 
         public ClientProvider(
-            IAppSettingsProvider appSettingsProvider,
+            IOptionsMonitor<MongoOptions> options,
             ILoggerFactory loggerFactory)
         {
-            this.appSettingsProvider = appSettingsProvider;
+            this.options = options;
             logger = loggerFactory.CreateLogger<ClientProvider>();
 
             ConfigureConnection();
@@ -49,14 +49,14 @@ namespace AgileTea.Persistence.Mongo.Client
                 try
                 {
                     logger.LogInformation("Initiating Mongo database connection");
-                    return new MongoClient(appSettingsProvider.DbConnection);
+                    return new MongoClient(options.CurrentValue.DbConnection);
                 }
                 catch (Exception e)
                 {
                     logger.LogError(e, "Failed to create mongo client and/or database", new
                     {
-                        MongoConnection = appSettingsProvider.DbConnection,
-                        DatabaseName = appSettingsProvider.DbName
+                        MongoConnection = options.CurrentValue.DbConnection,
+                        DatabaseName = options.CurrentValue.DbName
                     });
                     throw;
                 }
@@ -67,14 +67,14 @@ namespace AgileTea.Persistence.Mongo.Client
                 try
                 {
                     logger.LogInformation("Getting Mongo database");
-                    return client.Value.GetDatabase(appSettingsProvider.DbName);
+                    return client.Value.GetDatabase(options.CurrentValue.DbName);
                 }
                 catch (Exception e)
                 {
                     logger.LogError(e, "Failed to get mongo database", new
                     {
-                        MongoConnection = appSettingsProvider.DbConnection,
-                        DatabaseName = appSettingsProvider.DbName
+                        MongoConnection = options.CurrentValue.DbConnection,
+                        DatabaseName = options.CurrentValue.DbName
                     });
                     throw;
                 }
