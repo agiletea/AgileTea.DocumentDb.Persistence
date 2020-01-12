@@ -14,7 +14,9 @@
     <RepositoryUrl>https://github.com/agiletea/AgileTea.DocumentDb.Persistence</RepositoryUrl>
     <Company>AgileTea</Company>
     <Authors>Benjamin Jones (ben@agiletea.com)</Authors>
-    <PackageIconUrl>https://github.com/agiletea/AgileTea.DocumentDb.Persistence/blob/master/NugetIcon.png?raw=true</PackageIconUrl>
+    <PackageIconUrl></PackageIconUrl>
+    <PackageIcon>NugetIcon.png</PackageIcon>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,6 +31,17 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AgileTea.Persistence.Common\AgileTea.Persistence.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="NugetIcon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
