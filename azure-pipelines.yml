@@ -11,23 +11,29 @@ trigger:
 pool:
   vmImage: 'windows-latest'
 
+variables:
+  configuration: 'Release'
+
 steps:
 
 - task: DotNetCoreCLI@2
   displayName: dotnet build
   inputs:
     command: build
+    configuration: $(configuration)
     
 - task: DotNetCoreCLI@2
   displayName: dotnet test
   inputs:
     command: test
     projects: '**/*[Tt]ests.csproj'
+    configuration: $(configuration)
 
 - task: DotNetCoreCLI@2
   displayName: dotnet pack
   inputs:
     command: pack
+    configuration: $(configuration)
     packDirectory: '$(Build.ArtifactStagingDirectory)/packages'
 
 - task: PublishBuildArtifacts@1
