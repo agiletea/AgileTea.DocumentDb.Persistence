@@ -9,45 +9,76 @@ using MongoDB.Driver;
 
 namespace AgileTea.Persistence.Mongo.Repository
 {
+    /// <summary>
+    /// Base class for creating a repository for a given document type
+    /// </summary>
+    /// <typeparam name="TDocument">The type of document where TDocument is a <see cref="AgileTea.Persistence.Common.Entities.IndexedEntityBase"/></typeparam>
     public class DocumentRepositoryBase<TDocument> : RepositoryBase<TDocument, IMongoContext>
         where TDocument : IndexedEntityBase
     {
         private readonly IMongoContext context;
         private readonly ILogger logger;
 
-        protected DocumentRepositoryBase(IMongoContext context, ILogger logger) 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DocumentRepositoryBase{TDocument}"/> class.
+        /// </summary>
+        /// <param name="context">The Mongo context for accessing the document collection and mongo client</param>
+        /// <param name="logger">The logger created within the instantiation of specialised class</param>
+        protected DocumentRepositoryBase(IMongoContext context, ILogger logger)
             : base(context, logger)
         {
             this.context = context;
             this.logger = logger;
         }
 
+        /// <summary>
+        /// Adds a document to its collection
+        /// </summary>
+        /// <param name="document">The document to be added</param>
         public override void Add(TDocument document)
         {
             ExecuteDbSetAction((ctx, collection) => ctx.AddCommand(() => collection.InsertOneAsync(document)));
         }
 
+        /// <summary>
+        /// Gets a document by its id
+        /// </summary>
+        /// <param name="id">The id of the document</param>
+        /// <returns>The document if found within the collection</returns>
         public override async Task<TDocument> GetById(Guid id)
         {
-            var result = await ExecuteDbSetFunc(collection =>
-                    collection.FindAsync(Builders<TDocument>.Filter.Eq("_id", id))).ConfigureAwait(false);
+            var result = await ExecuteDbSetFunc(collection => collection.FindAsync(
+                Builders<TDocument>.Filter.Eq("_id", id)))
+                .ConfigureAwait(false);
             return result.SingleOrDefault();
         }
 
+        /// <summary>
+        /// Gets all documents within a collection
+        /// </summary>
+        /// <returns>The collection of the given document type</returns>
         public override async Task<IEnumerable<TDocument>> GetAll()
         {
-            var result = await ExecuteDbSetFunc(collection => 
-                collection.FindAsync(Builders<TDocument>.Filter.Empty)).ConfigureAwait(false);
-                
+            var result = await ExecuteDbSetFunc(collection => collection
+                        .FindAsync(Builders<TDocument>.Filter.Empty))
+                        .ConfigureAwait(false);
             return result.ToList();
         }
 
+        /// <summary>
+        /// Updates the given document within the collection through replacement
+        /// </summary>
+        /// <param name="document">The document to be used as its replacement</param>
         public override void Update(TDocument document)
         {
             ExecuteDbSetAction((ctx, collection) =>
                 ctx.AddCommand(() => collection.ReplaceOneAsync(Builders<TDocument>.Filter.Eq("_id", document.Id), document)));
         }
 
+        /// <summary>
+        /// Removes a document from the collection
+        /// </summary>
+        /// <param name="id">The id of the document to be removed</param>
         public override void Remove(Guid id)
         {
             ExecuteDbSetAction((ctx, collection) =>

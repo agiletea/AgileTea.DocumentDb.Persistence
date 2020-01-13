@@ -5,7 +5,7 @@ using MongoDB.Bson.Serialization;
 namespace AgileTea.Persistence.Mongo.Mappings
 {
     [ExcludeFromCodeCoverage]
-    public static class BaseMap
+    internal static class BaseMap
     {
         public static void Map()
         {

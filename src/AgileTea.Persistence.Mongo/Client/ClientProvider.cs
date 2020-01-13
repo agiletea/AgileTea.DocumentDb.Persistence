@@ -7,12 +7,12 @@ using MongoDB.Driver;
 namespace AgileTea.Persistence.Mongo.Client
 {
     [ExcludeFromCodeCoverage]
-    public sealed class ClientProvider : IClientProvider
+    internal sealed class ClientProvider : IClientProvider
     {
         private readonly IOptionsMonitor<MongoOptions> options;
         private readonly ILogger logger;
-        private Lazy<IMongoClient>? client;
-        private Lazy<IMongoDatabase>? database;
+        private Lazy<IMongoClient> client;
+        private Lazy<IMongoDatabase> database;
 
         public ClientProvider(
             IOptionsMonitor<MongoOptions> options,

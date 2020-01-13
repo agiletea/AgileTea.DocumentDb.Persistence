@@ -4,6 +4,9 @@ using MongoDB.Bson;
 
 namespace AgileTea.Persistence.Mongo
 {
+    /// <summary>
+    /// Options for connecting to a mongo database including specific conventions
+    /// </summary>
     [ExcludeFromCodeCoverage]
     public class MongoOptions
     {

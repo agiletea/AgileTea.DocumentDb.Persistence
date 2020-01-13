@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AgileTea.Persistence.Common.Entities;
 using AgileTea.Persistence.Mongo.Client;
 using AgileTea.Persistence.Mongo.Context;
 using Microsoft.Extensions.Logging;
@@ -64,7 +62,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Context
             Mock.Get(clientProvider).Setup(x => x.Client).Returns(null as IMongoClient);
 
             // act/ assert
-            var result = Assert.Throws<InvalidOperationException>(() => target.GetCollection<object>("System.Object"));
+            var result = Assert.Throws<InvalidOperationException>(() => target.GetCollection<TestDocument>(typeof(TestDocument).Name));
 
             // assert
             Assert.Equal("Mongo check failed. Client is null", result.Message);
@@ -78,7 +76,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Context
             Mock.Get(clientProvider).Setup(x => x.Database).Returns(null as IMongoDatabase);
 
             // act/ assert
-            var result = Assert.Throws<InvalidOperationException>(() => target.GetCollection<object>("System.Object"));
+            var result = Assert.Throws<InvalidOperationException>(() => target.GetCollection<TestDocument>(typeof(TestDocument).Name));
 
             // assert
             Assert.Equal("Mongo check failed. Database is null", result.Message);
@@ -105,6 +103,10 @@ namespace AgileTea.Persistence.Mongo.Tests.Context
         }
 
         [Fact]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Blocker Code Smell",
+            "S2699:Tests should include assertions",
+            Justification = "Just a check to ensure that if no writes are made then, with the session being null, " +
+                            "calling Dispose on it within the Dispose method of MongoContext does not throw an Exception")]
         public void GivenANoActiveSession_WhenDisposed_NoExceptionIsThrown()
         {
             // arrange
@@ -170,7 +172,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Context
             Mock.Verify(Mock.Get(sessionHandle));
         }
 
-        public class TestDocument
+        public class TestDocument : IndexedEntityBase
         {
         }
     }

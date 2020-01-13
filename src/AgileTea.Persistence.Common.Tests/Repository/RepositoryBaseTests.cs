@@ -43,11 +43,12 @@ namespace AgileTea.Persistence.Common.Tests.Repository
 
         public class TestRepository : RepositoryBase<TestEntity, TestContext>
         {
-            public TestRepository(TestContext context, ILogger logger) : base(context, logger)
+            public TestRepository(TestContext context, ILogger logger)
+                : base(context, logger)
             {
             }
 
-            public override void Add(TestEntity obj)
+            public override void Add(TestEntity document)
             {
                 throw new NotImplementedException();
             }
@@ -62,7 +63,7 @@ namespace AgileTea.Persistence.Common.Tests.Repository
                 throw new NotImplementedException();
             }
 
-            public override void Update(TestEntity obj)
+            public override void Update(TestEntity document)
             {
                 throw new NotImplementedException();
             }
@@ -73,6 +74,9 @@ namespace AgileTea.Persistence.Common.Tests.Repository
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell",
+            "S3881:\"IDisposable\" should be implemented correctly",
+            Justification = "Just a mock class for testing purposes")]
         public class TestContext : IDbContext
         {
             public bool IsDisposed { get; private set; }

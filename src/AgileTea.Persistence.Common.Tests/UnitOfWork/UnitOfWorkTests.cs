@@ -32,7 +32,6 @@ namespace AgileTea.Persistence.Common.Tests.UnitOfWork
             Mock.Get(context).Verify(x => x.SaveChangesAsync(), Times.Never);
         }
 
-
         [Fact]
         public async Task GivenAListOfCommands_WhenCommitAsyncIsCalled_ContextSaveChangesIsCalled()
         {
@@ -62,6 +61,5 @@ namespace AgileTea.Persistence.Common.Tests.UnitOfWork
         {
             public string TestProperty { get; set; }
         }
-
     }
 }

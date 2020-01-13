@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AgileTea.Persistence.Common.Entities;
@@ -36,7 +33,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
             var target = new TestDocumentRepository(context, logger);
             var expected = new TestDocument();
             var testCollection = Mock.Of<IMongoCollection<TestDocument>>();
-            
+
             Mock.Get(context)
                 .Setup(x => x.GetCollection<TestDocument>(typeof(TestDocument).Name))
                 .Returns(testCollection)
@@ -52,7 +49,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
                 .Returns(Task.FromResult(testCollection))
                 .Verifiable();
 
-            // act - need to use the unit of
+            // act
             target.Add(expected);
 
             // assert
@@ -86,8 +83,8 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
             Mock.Get(testCollection)
                 .Setup(x => x.ReplaceOneAsync(
                     It.Is<FilterDefinition<TestDocument>>(filter => filter.RenderToJson().Equals(expectedJsonFilter)),
-                    expected, 
-                    It.IsAny<ReplaceOptions>(), 
+                    expected,
+                    It.IsAny<ReplaceOptions>(),
                     default))
                 .Returns(Task.FromResult((ReplaceOneResult)new ReplaceOneResult.Acknowledged(1L, 1L, new BsonInt64(1L))))
                 .Verifiable();
@@ -108,7 +105,6 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
             var testCollection = Mock.Of<IMongoCollection<TestDocument>>();
             var id = Guid.NewGuid();
             var expectedJsonFilter = "{ \"_id\" : CSUUID(\"" + id + "\") }";
-            List<Func<Task>> commands = new List<Func<Task>>();
 
             Mock.Get(context)
                 .Setup(x => x.GetCollection<TestDocument>(typeof(TestDocument).Name))
@@ -124,10 +120,10 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
                 .Setup(x => x.DeleteOneAsync(
                     It.Is<FilterDefinition<TestDocument>>(filter => filter.RenderToJson().Equals(expectedJsonFilter)),
                     default))
-                .Returns(Task.FromResult((DeleteResult) new DeleteResult.Acknowledged(1L)))
+                .Returns(Task.FromResult((DeleteResult)new DeleteResult.Acknowledged(1L)))
                 .Verifiable();
 
-            // act - need to use the unit of
+            // act
             target.Remove(id);
 
             // assert
@@ -144,8 +140,8 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
             var findCollection = Mock.Of<IAsyncCursor<TestDocument>>();
             const string expectedJsonFilter = "{ }";
             int index = 0;
-            var expected = new [] { new TestDocument(), new TestDocument() };
-            
+            var expected = new[] { new TestDocument(), new TestDocument() };
+
             Mock.Get(context)
                 .Setup(x => x.GetCollection<TestDocument>(typeof(TestDocument).Name))
                 .Returns(testCollection)
@@ -170,7 +166,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
                     default))
                 .Returns(Task.FromResult(findCollection))
                 .Verifiable();
-            
+
             // act
             var actual = await target.GetAll().ConfigureAwait(false);
 
@@ -190,8 +186,6 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
             var findCollection = Mock.Of<IAsyncCursor<TestDocument>>();
             var expected = new TestDocument();
             var expectedJsonFilter = "{ \"_id\" : CSUUID(\"" + id + "\") }";
-            List<Func<Task>> commands = new List<Func<Task>>();
-
             Mock.Get(context)
                 .Setup(x => x.GetCollection<TestDocument>(typeof(TestDocument).Name))
                 .Returns(testCollection)
@@ -203,7 +197,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
 
             Mock.Get(findCollection)
                 .Setup(x => x.Current)
-                .Returns(new [] { expected });
+                .Returns(new[] { expected });
 
             Mock.Get(testCollection)
                 .Setup(x => x.FindAsync(
@@ -227,15 +221,14 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
         {
             // arrange
             var target = new TestDocumentRepository(context, logger);
-            
             Mock.Get(context)
                 .Setup(x => x.GetCollection<TestDocument>(typeof(TestDocument).Name))
                 .Throws(new Exception("Test error message"))
                 .Verifiable();
 
             // act
-            var actual = await Assert.ThrowsAsync<Exception>(async () => 
-                await target.GetAll().ConfigureAwait(false))
+            var actual = await Assert.ThrowsAsync<Exception>(async () =>
+                    await target.GetAll().ConfigureAwait(false))
                 .ConfigureAwait(false);
 
             // assert
@@ -245,13 +238,14 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
 
         public class TestDocumentRepository : DocumentRepositoryBase<TestDocument>
         {
-            public TestDocumentRepository(IMongoContext context, ILogger logger) 
+            public TestDocumentRepository(IMongoContext context, ILogger logger)
                 : base(context, logger)
             {
             }
         }
 
         public class TestDocument : IndexedEntityBase
-        { }
+        {
+        }
     }
 }

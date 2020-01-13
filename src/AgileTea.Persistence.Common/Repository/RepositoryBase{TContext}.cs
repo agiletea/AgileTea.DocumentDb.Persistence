@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using AgileTea.Persistence.Common.Contexts;
 using Microsoft.Extensions.Logging;
 
 namespace AgileTea.Persistence.Common.Repository
 {
+    [SuppressMessage(
+        "StyleCop.CSharp.DocumentationRules",
+        "SA1649:File name should match first type name",
+        Justification = "File name allows for clarification that this is a generic class")]
     public abstract class RepositoryBase<TEntity, TContext> : IRepository<TEntity>
         where TContext : IDbContext
         where TEntity : class

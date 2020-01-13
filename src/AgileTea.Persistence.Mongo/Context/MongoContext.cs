@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AgileTea.Persistence.Common.Entities;
 using AgileTea.Persistence.Mongo.Client;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
@@ -13,7 +14,7 @@ namespace AgileTea.Persistence.Mongo.Context
         private readonly IClientProvider clientProvider;
         private readonly List<Func<Task>> commands;
         private readonly ILogger logger;
-        private IClientSessionHandle? session;
+        private IClientSessionHandle session;
 
         public MongoContext(
             IClientProvider clientProvider,
@@ -45,12 +46,13 @@ namespace AgileTea.Persistence.Mongo.Context
             return commands.Count;
         }
 
-        public IMongoCollection<T> GetCollection<T>(string name)
+        public IMongoCollection<TDocument> GetCollection<TDocument>(string name)
+            where TDocument : IndexedEntityBase
         {
             CheckMongo();
 
             // we know the app will throw an exception if the previous statement fails to deliver
-            return clientProvider.Database!.GetCollection<T>(name);
+            return clientProvider.Database!.GetCollection<TDocument>(name);
         }
 
         public void AddCommand(Func<Task> func)
