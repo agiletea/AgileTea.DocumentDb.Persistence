@@ -25,13 +25,24 @@ namespace AgileTea.Persistence.Mongo
         void RegisterMongo();
     }
 
+    /// <summary>
+    /// Extension class for adding bson mappings for mongo registration
+    /// </summary>
     [ExcludeFromCodeCoverage]
     [SuppressMessage(
         "StyleCop.CSharp.DocumentationRules",
         "SA1649:File name should match first type name",
         Justification = "Configuration builder interface, classes and extensions to be used within ConfigureServices. Easier to keep this altogether")]
-    internal static class MongoDbBuilderExtensions
+    public static class MongoDbBuilderExtensions
     {
+        /// <summary>
+        /// Adds a list of property mappings for given document type
+        /// </summary>
+        /// <param name="builder">The <see cref="AgileTea.Persistence.Mongo.IMongoDbBuilder"/> used for registration</param>
+        /// <param name="mappings">List of mappings</param>
+        /// <typeparam name="T">Document type</typeparam>
+        /// <returns>The <see cref="AgileTea.Persistence.Mongo.IMongoDbBuilder"/> instance</returns>
+        /// <exception cref="ArgumentNullException">Throws exception if the builder is null</exception>
         public static IMongoDbBuilder AddMappings<T>(this IMongoDbBuilder builder, params Action<BsonClassMap<T>>[] mappings)
             where T : class
         {
