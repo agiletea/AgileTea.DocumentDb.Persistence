@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using AgileTea.Persistence.Mongo.Client;
 using AgileTea.Persistence.Mongo.Context;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,6 +29,7 @@ namespace AgileTea.Persistence.Mongo
                 throw new ArgumentNullException(nameof(options));
             }
 
+            services.AddSingleton<IClientProvider, ClientProvider>();
             services.AddScoped<IMongoContext, MongoContext>();
             services.Configure(options);
 
