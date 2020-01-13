@@ -16,11 +16,11 @@
     <PackageIconUrl></PackageIconUrl>
     <PackageIcon>NugetIcon.png</PackageIcon>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.0.4-beta</Version>
-    <PackageReleaseNotes>Preview Release for testing. Do Not Use!</PackageReleaseNotes>
-    <AssemblyVersion>0.1.0.4</AssemblyVersion>
-    <FileVersion>0.1.0.4</FileVersion>
-    <PackageVersion>1.0.4-beta</PackageVersion>
+    <Version>1.0.5</Version>
+    <PackageReleaseNotes>First Release for public use</PackageReleaseNotes>
+    <AssemblyVersion>0.1.0.5</AssemblyVersion>
+    <FileVersion>0.1.0.5</FileVersion>
+    <PackageVersion>1.0.5</PackageVersion>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
 
