@@ -12,7 +12,7 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/agiletea/AgileTea.DocumentDb.Persistence</RepositoryUrl>
     <Company>AgileTea</Company>
-    <Authors>Benjamin Jones (ben@agiletea.com)</Authors>
+    <Authors>Benjamin Jones</Authors>
     <PackageIconUrl></PackageIconUrl>
     <PackageIcon>NugetIcon.png</PackageIcon>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
