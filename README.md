@@ -59,6 +59,71 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
+## Repository Methods
+
+- GetAllAsync()
+- GetByIdAsync()
+- Add(TDocument document) // needs to be called within a unit of work and then committed to persist
+- Update(TDocument document) // needs to be called within a unit of work and then committed to persist
+- Remove(Guid id) // needs to be called within a unit of work and then committed to persist
+
+## Usage
+
+Inject an IRepository<T> into your class for use:
+```csharp
+[ApiController]
+[ApiVersion("1.0")]
+[Route("api/[controller]")]
+public class SomeClassController : ControllerBase
+{
+    private readonly IRepository<SomeClass> someClassRepository;
+
+    public SomeClassController(IRepository<SomeClass> someClassRepository)
+    {
+        this.someClassRepository = someClassRepository;
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<SomeClass>>> GetAllAsync()
+    {
+        return new ActionResult<IEnumerable<SomeClass>>(await someClassRepository.GetAllAsync().ConfigureAwait(false));
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<SomeClass>> GetByIdAsync(Guid id)
+    {
+        return new ActionResult<SomeClass>(await someClassRepository.GetByIdAsync(id).ConfigureAwait(false));
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> AddAsync([FromBody]SomeClass SomeClass)
+    {
+        using var unitOfWork = new UnitOfWork(someClassRepository);
+        someClassRepository.Add(SomeClass);
+        await unitOfWork.CommitAsync();
+        return Accepted();
+    }
+
+    [HttpPut]
+    public async Task<ActionResult> UpdateAsync([FromBody]SomeClass SomeClass)
+    {
+        using var unitOfWork = new UnitOfWork(someClassRepository);
+        someClassRepository.Update(SomeClass);
+        await unitOfWork.CommitAsync().ConfigureAwait(false);
+        return Accepted();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteAsync(Guid id)
+    {
+        using var unitOfWork = new UnitOfWork(someClassRepository);
+        someClassRepository.Remove(id);
+        await unitOfWork.CommitAsync().ConfigureAwait(false);
+        return Accepted();
+    }
+}
+```
+
 
 [0]: https://www.mongodb.com/
 [1]: https://www.nuget.org/packages/AgileTea.Persistence.Mongo

@@ -8,8 +8,8 @@ namespace AgileTea.Persistence.Common.Repository
         where TEntity : class
     {
         void Add(TEntity document);
-        Task<TEntity> GetById(Guid id);
-        Task<IEnumerable<TEntity>> GetAll();
+        Task<TEntity> GetByIdAsync(Guid id);
+        Task<IEnumerable<TEntity>> GetAllAsync();
         void Update(TEntity document);
         void Remove(Guid id);
     }

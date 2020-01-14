@@ -168,7 +168,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
                 .Verifiable();
 
             // act
-            var actual = await target.GetAll().ConfigureAwait(false);
+            var actual = await target.GetAllAsync().ConfigureAwait(false);
 
             // assert
             Assert.Equal(expected, actual);
@@ -208,7 +208,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
                 .Verifiable();
 
             // act
-            var actual = await target.GetById(id).ConfigureAwait(false);
+            var actual = await target.GetByIdAsync(id).ConfigureAwait(false);
 
             // assert
             Assert.Equal(expected, actual);
@@ -228,7 +228,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
 
             // act
             var actual = await Assert.ThrowsAsync<Exception>(async () =>
-                    await target.GetAll().ConfigureAwait(false))
+                    await target.GetAllAsync().ConfigureAwait(false))
                 .ConfigureAwait(false);
 
             // assert

@@ -30,9 +30,9 @@ namespace AgileTea.Persistence.Common.Repository
 
         public abstract void Add(TEntity document);
 
-        public abstract Task<TEntity> GetById(Guid id);
+        public abstract Task<TEntity> GetByIdAsync(Guid id);
 
-        public abstract Task<IEnumerable<TEntity>> GetAll();
+        public abstract Task<IEnumerable<TEntity>> GetAllAsync();
 
         public abstract void Update(TEntity document);
 

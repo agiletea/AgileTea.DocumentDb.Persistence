@@ -45,9 +45,9 @@ namespace AgileTea.Persistence.Mongo.Repository
         /// </summary>
         /// <param name="id">The id of the document</param>
         /// <returns>The document if found within the collection</returns>
-        public override async Task<TDocument> GetById(Guid id)
+        public override async Task<TDocument> GetByIdAsync(Guid id)
         {
-            var result = await ExecuteDbSetFunc(collection => collection.FindAsync(
+            var result = await ExecuteDbSetFuncAsync(collection => collection.FindAsync(
                 Builders<TDocument>.Filter.Eq("_id", id)))
                 .ConfigureAwait(false);
             return result.SingleOrDefault();
@@ -57,9 +57,9 @@ namespace AgileTea.Persistence.Mongo.Repository
         /// Gets all documents within a collection
         /// </summary>
         /// <returns>The collection of the given document type</returns>
-        public override async Task<IEnumerable<TDocument>> GetAll()
+        public override async Task<IEnumerable<TDocument>> GetAllAsync()
         {
-            var result = await ExecuteDbSetFunc(collection => collection
+            var result = await ExecuteDbSetFuncAsync(collection => collection
                         .FindAsync(Builders<TDocument>.Filter.Empty))
                         .ConfigureAwait(false);
             return result.ToList();
@@ -93,7 +93,7 @@ namespace AgileTea.Persistence.Mongo.Repository
             action.Invoke(context, dbSet!);
         }
 
-        private async Task<TResult> ExecuteDbSetFunc<TResult>(Func<IMongoCollection<TDocument>, Task<TResult>> func)
+        private async Task<TResult> ExecuteDbSetFuncAsync<TResult>(Func<IMongoCollection<TDocument>, Task<TResult>> func)
         {
             var dbSet = GetDbSet();
 

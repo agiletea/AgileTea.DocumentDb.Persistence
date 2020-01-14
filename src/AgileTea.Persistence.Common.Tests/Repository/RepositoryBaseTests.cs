@@ -53,12 +53,12 @@ namespace AgileTea.Persistence.Common.Tests.Repository
                 throw new NotImplementedException();
             }
 
-            public override Task<TestEntity> GetById(Guid id)
+            public override Task<TestEntity> GetByIdAsync(Guid id)
             {
                 throw new NotImplementedException();
             }
 
-            public override Task<IEnumerable<TestEntity>> GetAll()
+            public override Task<IEnumerable<TestEntity>> GetAllAsync()
             {
                 throw new NotImplementedException();
             }
