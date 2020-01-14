@@ -16,11 +16,16 @@
     <PackageIconUrl></PackageIconUrl>
     <PackageIcon>NugetIcon.png</PackageIcon>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.0.5</Version>
-    <PackageReleaseNotes>First Release for public use</PackageReleaseNotes>
-    <AssemblyVersion>0.1.0.5</AssemblyVersion>
-    <FileVersion>0.1.0.5</FileVersion>
-    <PackageVersion>1.0.5</PackageVersion>
+    <Version>1.0.6-beta</Version>
+    <PackageReleaseNotes>IMPORTANT - BREAKING CHANGES!
+
+1. IRepository.GetAll() method renamed to IRepository.GetAllAsync()
+2. IRepository.GetById() method renamed to IRepository.GetBydIdAsync()
+3. UnitOfWork is now **internal** and should be created by injecting a new IUnitOfWorkFactory interface on which **CreateUnitOfWork** can be called
+</PackageReleaseNotes>
+    <AssemblyVersion>0.1.0.6-beta</AssemblyVersion>
+    <FileVersion>0.1.0.6-beta</FileVersion>
+    <PackageVersion>1.0.6-beta</PackageVersion>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
 
