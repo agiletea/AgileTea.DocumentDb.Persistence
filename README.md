@@ -67,6 +67,13 @@ public void ConfigureServices(IServiceCollection services)
 - Update(TDocument document) // needs to be called within a unit of work and then committed to persist
 - Remove(Guid id) // needs to be called within a unit of work and then committed to persist
 
+## Unit of Work
+
+For those methods requiring a transactional approahc (Add/Update/Delete), the call tot he methods should be wrapped inside a unit of work.
+To create  unit of work, inject an IUnitOfWorkFacotry into your constructor and call its **CreateUnitOfWork** method which will return an **IUnitOfWork**. 
+This allows for both the factory and the unit of work to be mocked within your unit tests.
+To commit a collection of commands called on a repository, called the async method **CommitAsync**
+
 ## Usage
 
 Inject an IRepository<T> into your class for use:
@@ -77,10 +84,14 @@ Inject an IRepository<T> into your class for use:
 public class SomeClassController : ControllerBase
 {
     private readonly IRepository<SomeClass> someClassRepository;
+    private readonly IUnitOfWorkFactory unitOfWorkFactory;
 
-    public SomeClassController(IRepository<SomeClass> someClassRepository)
+    public SomeClassController(
+        IRepository<SomeClass> someClassRepository,
+        IUnitOfWorkFactory unitOfWorkFactory)
     {
         this.someClassRepository = someClassRepository;
+        this.unitOfWorkFactory = unitOfWorkFactory;
     }
 
     [HttpGet]
@@ -98,7 +109,7 @@ public class SomeClassController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> AddAsync([FromBody]SomeClass SomeClass)
     {
-        using var unitOfWork = new UnitOfWork(someClassRepository);
+        using var unitOfWork = unitOfWorkFactory.CreateUnitOfWork(someClassRepository);
         someClassRepository.Add(SomeClass);
         await unitOfWork.CommitAsync();
         return Accepted();
@@ -107,7 +118,7 @@ public class SomeClassController : ControllerBase
     [HttpPut]
     public async Task<ActionResult> UpdateAsync([FromBody]SomeClass SomeClass)
     {
-        using var unitOfWork = new UnitOfWork(someClassRepository);
+        using var unitOfWork = unitOfWorkFactory.CreateUnitOfWork(someClassRepository);
         someClassRepository.Update(SomeClass);
         await unitOfWork.CommitAsync().ConfigureAwait(false);
         return Accepted();
@@ -116,7 +127,7 @@ public class SomeClassController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteAsync(Guid id)
     {
-        using var unitOfWork = new UnitOfWork(someClassRepository);
+        using var unitOfWork = unitOfWorkFactory.CreateUnitOfWork(someClassRepository);
         someClassRepository.Remove(id);
         await unitOfWork.CommitAsync().ConfigureAwait(false);
         return Accepted();

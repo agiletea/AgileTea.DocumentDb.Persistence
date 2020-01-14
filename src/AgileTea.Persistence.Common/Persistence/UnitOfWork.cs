@@ -1,10 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AgileTea.Persistence.Common.Repository;
 
 namespace AgileTea.Persistence.Common.Persistence
 {
-    public sealed class UnitOfWork : IDisposable
+    internal sealed class UnitOfWork : IUnitOfWork
     {
         private readonly IRepository repository;
 
