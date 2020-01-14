@@ -1,4 +1,4 @@
-# <img src="src/AgileTea.Persistence.Mongo/NugetIcon.png" alt="drawing" width="30"/> AgileTea.DocumentDb.Persistence
+# <img src="src/AgileTea.Persistence.Mongo/NugetIcon.png" alt="drawing" height="30"/> AgileTea.DocumentDb.Persistence
 
 [![Build Status](https://agiletea.visualstudio.com/Agile%20Tea%20Document%20Db%20Persistence/_apis/build/status/agiletea.AgileTea.DocumentDb.Persistence?branchName=master)]()
 [![NuGet Version](https://img.shields.io/nuget/v/AgileTea.Persistence.Mongo)](https://www.nuget.org/packages/AgileTea.Persistence.Mongo/)
