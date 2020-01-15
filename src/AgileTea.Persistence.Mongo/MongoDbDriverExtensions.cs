@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using AgileTea.Persistence.Common;
 using AgileTea.Persistence.Mongo.Client;
 using AgileTea.Persistence.Mongo.Context;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace AgileTea.Persistence.Mongo
 {
     /// <summary>
-    /// <see cref="Microsoft.Extensions.DependencyInjection.IServiceCollection"/> extensions for regsitering the services
+    /// <see cref="Microsoft.Extensions.DependencyInjection.IServiceCollection"/> extensions for registering the services
     /// specific to the Mongo Db Persistence library
     /// </summary>
     [ExcludeFromCodeCoverage]
@@ -29,6 +30,7 @@ namespace AgileTea.Persistence.Mongo
                 throw new ArgumentNullException(nameof(options));
             }
 
+            services.RegisterCommonServices();
             services.AddSingleton<IClientProvider, ClientProvider>();
             services.AddScoped<IMongoContext, MongoContext>();
             services.Configure(options);
