@@ -132,7 +132,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
         }
 
         [Fact]
-        public async Task GivenADocumentRepository_WhenGetAllIsCalled_CollectionIsTakenFromContext()
+        public async Task GivenADocumentRepository_WhenGetAllAsyncIsCalled_CollectionIsTakenFromContext()
         {
             // arrange
             var target = new TestDocumentRepository(context, logger);
@@ -177,7 +177,52 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
         }
 
         [Fact]
-        public async Task GivenADocumentRepository_WhenGetByIdIsCalled_CollectionIsTakenFromContext()
+        public void GivenADocumentRepository_WhenGetAllIsCalled_CollectionIsTakenFromContext()
+        {
+            // arrange
+            var target = new TestDocumentRepository(context, logger);
+            var testCollection = Mock.Of<IMongoCollection<TestDocument>>();
+            var findCollection = Mock.Of<IAsyncCursor<TestDocument>>();
+            const string expectedJsonFilter = "{ }";
+            int index = 0;
+            var expected = new[] { new TestDocument(), new TestDocument() };
+
+            Mock.Get(context)
+                .Setup(x => x.GetCollection<TestDocument>(typeof(TestDocument).Name))
+                .Returns(testCollection)
+                .Verifiable();
+
+            Mock.Get(findCollection)
+                .Setup(x => x.MoveNext(It.IsAny<CancellationToken>()))
+                .Callback((CancellationToken ct) =>
+                {
+                    index++;
+                })
+                .Returns(() => index < expected.Length);
+
+            Mock.Get(findCollection)
+                .Setup(x => x.Current)
+                .Returns(expected);
+
+            Mock.Get(testCollection)
+                .Setup(x => x.FindSync(
+                    It.Is<FilterDefinition<TestDocument>>(filter => filter.RenderToJson().Equals(expectedJsonFilter)),
+                    It.IsAny<FindOptions<TestDocument, TestDocument>>(),
+                    default))
+                .Returns(findCollection)
+                .Verifiable();
+
+            // act
+            var actual = target.GetAll();
+
+            // assert
+            Assert.Equal(expected, actual);
+            Mock.Verify(Mock.Get(context));
+            Mock.Verify(Mock.Get(testCollection));
+        }
+
+        [Fact]
+        public async Task GivenADocumentRepository_WhenGetByIdAsyncIsCalled_CollectionIsTakenFromContext()
         {
             // arrange
             var target = new TestDocumentRepository(context, logger);
@@ -209,6 +254,46 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
 
             // act
             var actual = await target.GetByIdAsync(id).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(expected, actual);
+            Mock.Verify(Mock.Get(context));
+            Mock.Verify(Mock.Get(testCollection));
+        }
+
+        [Fact]
+        public void GivenADocumentRepository_WhenGetByIdIsCalled_CollectionIsTakenFromContext()
+        {
+            // arrange
+            var target = new TestDocumentRepository(context, logger);
+            var testCollection = Mock.Of<IMongoCollection<TestDocument>>();
+            var id = Guid.NewGuid();
+            var findCollection = Mock.Of<IAsyncCursor<TestDocument>>();
+            var expected = new TestDocument();
+            var expectedJsonFilter = "{ \"_id\" : CSUUID(\"" + id + "\") }";
+            Mock.Get(context)
+                .Setup(x => x.GetCollection<TestDocument>(typeof(TestDocument).Name))
+                .Returns(testCollection)
+                .Verifiable();
+
+            Mock.Get(findCollection)
+                .Setup(x => x.MoveNext(It.IsAny<CancellationToken>()))
+                .Returns(true);
+
+            Mock.Get(findCollection)
+                .Setup(x => x.Current)
+                .Returns(new[] { expected });
+
+            Mock.Get(testCollection)
+                .Setup(x => x.FindSync(
+                    It.Is<FilterDefinition<TestDocument>>(filter => filter.RenderToJson().Equals(expectedJsonFilter)),
+                    It.IsAny<FindOptions<TestDocument, TestDocument>>(),
+                    default))
+                .Returns(findCollection)
+                .Verifiable();
+
+            // act
+            var actual = target.GetById(id);
 
             // assert
             Assert.Equal(expected, actual);
