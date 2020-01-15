@@ -16,18 +16,18 @@
     <PackageIconUrl></PackageIconUrl>
     <PackageIcon>NugetIcon.png</PackageIcon>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.0.7-20200115.1</Version>
+    <Version>1.0.8</Version>
     <PackageReleaseNotes>IMPORTANT - BREAKING CHANGES!
 
 1. IRepository.GetAll() method now returns sync IEnumerableof type TDocument
 2. IRepository.GetAllAsync() method allows for async operation of GetAll
 3. IRepository.GetById() method now return an instance of type TDcouemnt synchronously
 4. IRepository.GetByIdAsync() method provides an async operation of GetById
-5. Note, as per the 1.0.6-beta, UnitOfWork is now **internal** and should be created by injecting a new IUnitOfWorkFactory interface on which **CreateUnitOfWork** can be called
+5. UnitOfWork is now **internal** and should be created by injecting a new IUnitOfWorkFactory interface on which **CreateUnitOfWork** can be called
 </PackageReleaseNotes>
-    <AssemblyVersion>0.1.0.702</AssemblyVersion>
-    <FileVersion>0.1.0.702</FileVersion>
-    <PackageVersion>1.0.7-20200115.1</PackageVersion>
+    <AssemblyVersion>0.1.0.8</AssemblyVersion>
+    <FileVersion>0.1.0.8</FileVersion>
+    <PackageVersion>1.0.8</PackageVersion>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
 
