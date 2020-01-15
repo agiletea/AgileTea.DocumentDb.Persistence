@@ -11,9 +11,9 @@ namespace AgileTea.Persistence.Common.Repository
         "StyleCop.CSharp.DocumentationRules",
         "SA1649:File name should match first type name",
         Justification = "File name allows for clarification that this is a generic class")]
-    public abstract class RepositoryBase<TEntity, TContext> : IRepository<TEntity>
+    public abstract class RepositoryBase<TDocument, TContext> : IRepository<TDocument>
         where TContext : IDbContext
-        where TEntity : class
+        where TDocument : class
     {
         private readonly ILogger logger;
         private readonly TContext context;
@@ -28,13 +28,17 @@ namespace AgileTea.Persistence.Common.Repository
 
         public IDbContext DbContext => context;
 
-        public abstract void Add(TEntity document);
+        public abstract void Add(TDocument document);
 
-        public abstract Task<TEntity> GetByIdAsync(Guid id);
+        public abstract Task<TDocument> GetByIdAsync(Guid id);
 
-        public abstract Task<IEnumerable<TEntity>> GetAllAsync();
+        public abstract TDocument GetById(Guid id);
 
-        public abstract void Update(TEntity document);
+        public abstract Task<IEnumerable<TDocument>> GetAllAsync();
+
+        public abstract IEnumerable<TDocument> GetAll();
+
+        public abstract void Update(TDocument document);
 
         public abstract void Remove(Guid id);
 

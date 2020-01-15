@@ -54,6 +54,17 @@ namespace AgileTea.Persistence.Mongo.Repository
         }
 
         /// <summary>
+        /// Gets a document by its id
+        /// </summary>
+        /// <param name="id">The id of the document</param>
+        /// <returns>The document if found within the collection</returns>
+        public override TDocument GetById(Guid id)
+        {
+            var result = ExecuteDbSetFunc(collection => collection.Find(doc => doc.Id == id));
+            return result.SingleOrDefault();
+        }
+
+        /// <summary>
         /// Gets all documents within a collection
         /// </summary>
         /// <returns>The collection of the given document type</returns>
@@ -62,6 +73,16 @@ namespace AgileTea.Persistence.Mongo.Repository
             var result = await ExecuteDbSetFuncAsync(collection => collection
                         .FindAsync(Builders<TDocument>.Filter.Empty))
                         .ConfigureAwait(false);
+            return result.ToList();
+        }
+
+        /// <summary>
+        /// Gets all documents within a collection
+        /// </summary>
+        /// <returns>The collection of the given document type</returns>
+        public override IEnumerable<TDocument> GetAll()
+        {
+            var result = ExecuteDbSetFunc(collection => collection.Find(Builders<TDocument>.Filter.Empty));
             return result.ToList();
         }
 
@@ -99,6 +120,14 @@ namespace AgileTea.Persistence.Mongo.Repository
 
             // we know the app will throw an exception if the previous statement fails to deliver
             return await func(dbSet!).ConfigureAwait(false);
+        }
+
+        private TResult ExecuteDbSetFunc<TResult>(Func<IMongoCollection<TDocument>, TResult> func)
+        {
+            var dbSet = GetDbSet();
+
+            // we know the app will throw an exception if the previous statement fails to deliver
+            return func(dbSet!);
         }
 
         private IMongoCollection<TDocument> GetDbSet()
