@@ -16,7 +16,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Context
         private readonly IClientProvider clientProvider = Mock.Of<IClientProvider>();
         private readonly ILoggerFactory loggerFactory = Mock.Of<ILoggerFactory>();
         private readonly ILogger<MongoContext> logger = Mock.Of<ILogger<MongoContext>>();
-        private readonly IMongoClient client = Mock.Of<IMongoClient>();
+        private readonly IMongoDbClient client = Mock.Of<IMongoDbClient>();
         private readonly IMongoDatabase database = Mock.Of<IMongoDatabase>();
 
         public MongoContextTests()
@@ -31,7 +31,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Context
         {
             // arrange
             var target = new MongoContext(clientProvider, loggerFactory);
-            Mock.Get(clientProvider).Setup(x => x.Client).Returns(null as IMongoClient);
+            Mock.Get(clientProvider).Setup(x => x.Client).Returns(null as IMongoDbClient);
 
             // act/ assert
             var result = await Assert.ThrowsAsync<InvalidOperationException>(() => target.SaveChangesAsync());
@@ -59,7 +59,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Context
         {
             // arrange
             var target = new MongoContext(clientProvider, loggerFactory);
-            Mock.Get(clientProvider).Setup(x => x.Client).Returns(null as IMongoClient);
+            Mock.Get(clientProvider).Setup(x => x.Client).Returns(null as IMongoDbClient);
 
             // act/ assert
             var result = Assert.Throws<InvalidOperationException>(() => target.GetCollection<TestDocument>(typeof(TestDocument).Name));
@@ -124,6 +124,11 @@ namespace AgileTea.Persistence.Mongo.Tests.Context
             var sessionHandle = Mock.Of<IClientSessionHandle>();
 
             Mock.Get(client)
+                .Setup(x => x.CanSupportTransactions)
+                .Returns(true)
+                .Verifiable();
+
+            Mock.Get(client)
                 .Setup(x => x.StartSessionAsync(null, default(CancellationToken)))
                 .ReturnsAsync(sessionHandle)
                 .Verifiable();
@@ -140,11 +145,16 @@ namespace AgileTea.Persistence.Mongo.Tests.Context
         }
 
         [Fact]
-        public async Task GivenCommands_WhenSaveChangesCalled_TheCommandsAreActioned()
+        public async Task GivenTransactionsAreSupported_WhenSaveChangesCalled_TheCommandsAreActionedWithinATransaction()
         {
             // arrange
             var target = new MongoContext(clientProvider, loggerFactory);
             var sessionHandle = Mock.Of<IClientSessionHandle>();
+
+            Mock.Get(client)
+                .Setup(x => x.CanSupportTransactions)
+                .Returns(true)
+                .Verifiable();
 
             Mock.Get(sessionHandle)
                 .Setup(x => x.StartTransaction(null))
@@ -170,6 +180,29 @@ namespace AgileTea.Persistence.Mongo.Tests.Context
             // assert
             Assert.True(commandHasRun);
             Mock.Verify(Mock.Get(sessionHandle));
+        }
+
+        [Fact]
+        public async Task GivenTransactionsAreNotSupported_WhenSaveChangesCalled_TheCommandsAreActionedWithoutATransaction()
+        {
+            // arrange
+            var target = new MongoContext(clientProvider, loggerFactory);
+
+            Mock.Get(client)
+                .Setup(x => x.CanSupportTransactions)
+                .Returns(false)
+                .Verifiable();
+
+            bool commandHasRun = false;
+
+            target.AddCommand(() => Task.Run(() => commandHasRun = true));
+
+            // act
+            await target.SaveChangesAsync();
+
+            // assert
+            Assert.True(commandHasRun);
+            Mock.Get(client).Verify(x => x.StartSessionAsync(null, default), Times.Never);
         }
 
         public class TestDocument : IndexedEntityBase

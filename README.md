@@ -59,6 +59,32 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
+### NEW from Preview release version 1.1.0-preview1.20200118.1
+
+Enable support for Cosmos via the MongoDB wire portocol api. Note that enabling this option will disable transactionality as Session creation is currently not supported in Cosmos through the MongoDb ewire protocol.
+
+```csharp
+
+public void ConfigureServices(IServiceCollection services)
+{
+  // service configuration etc.
+  // ...
+  
+  services.AddMongo(options =>
+  {
+    options.CanSupportCosmos = true;
+    options.DbConnection = Configuration["mongo:dbConnection"];
+    options.DbName = Configuration["mongo:dbName"];
+  })
+  .AddMappings<SomeClass>(
+    map => map.MapMember(x => x.SomeProperty).SetIsRequired(true),
+    map => map.MapMember(x => x.SomeOtherProperty).SetIsRequired(true)
+  .RegisterMongo();
+
+  // ...
+}
+```
+
 ## Repository Methods
 
 - GetAllAsync()

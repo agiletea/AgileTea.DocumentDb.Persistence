@@ -32,16 +32,23 @@ namespace AgileTea.Persistence.Mongo.Context
             CheckMongo();
 
             // we know the app will throw an exception if the previous statement fails to deliver
-            using (session = await clientProvider.Client!.StartSessionAsync())
+            if (clientProvider.Client!.CanSupportTransactions)
             {
-                session.StartTransaction();
+                using (session = await clientProvider.Client!.StartSessionAsync())
+                {
+                    session.StartTransaction();
 
-                var commandTasks = commands.Select(c => c());
+                    var commandTasks = commands.Select(c => c());
 
-                await Task.WhenAll(commandTasks);
+                    await Task.WhenAll(commandTasks);
 
-                await session.CommitTransactionAsync();
+                    await session.CommitTransactionAsync();
+                }
+
+                return commands.Count;
             }
+
+            await Task.WhenAll(commands.Select(c => c()));
 
             return commands.Count;
         }
