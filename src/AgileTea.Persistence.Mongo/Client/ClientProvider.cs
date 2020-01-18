@@ -11,7 +11,7 @@ namespace AgileTea.Persistence.Mongo.Client
     {
         private readonly IOptionsMonitor<MongoOptions> options;
         private readonly ILogger logger;
-        private Lazy<IMongoClient> client;
+        private Lazy<IMongoDbClient> client;
         private Lazy<IMongoDatabase> database;
 
         public ClientProvider(
@@ -24,7 +24,7 @@ namespace AgileTea.Persistence.Mongo.Client
             ConfigureConnection();
         }
 
-        public IMongoClient Client => client!.Value;
+        public IMongoDbClient Client => client!.Value;
 
         public IMongoDatabase Database => database!.Value;
 
@@ -44,30 +44,14 @@ namespace AgileTea.Persistence.Mongo.Client
 
         private void ConfigureConnection()
         {
-            client = new Lazy<IMongoClient>(() =>
-            {
-                try
-                {
-                    logger.LogInformation("Initiating Mongo database connection");
-                    return new MongoClient(options.CurrentValue.DbConnection);
-                }
-                catch (Exception e)
-                {
-                    logger.LogError(e, "Failed to create mongo client and/or database", new
-                    {
-                        MongoConnection = options.CurrentValue.DbConnection,
-                        DatabaseName = options.CurrentValue.DbName
-                    });
-                    throw;
-                }
-            });
+            client = new Lazy<IMongoDbClient>(InitialiseMongoClient);
 
             database = new Lazy<IMongoDatabase>(() =>
             {
                 try
                 {
                     logger.LogInformation("Getting Mongo database");
-                    return client.Value.GetDatabase(options.CurrentValue.DbName);
+                    return Client.GetDatabase(options.CurrentValue.DbName);
                 }
                 catch (Exception e)
                 {
@@ -79,6 +63,30 @@ namespace AgileTea.Persistence.Mongo.Client
                     throw;
                 }
             });
+        }
+
+        private IMongoDbClient InitialiseMongoClient()
+        {
+            try
+            {
+                logger.LogInformation("Initiating Mongo database connection");
+
+                if (options.CurrentValue.CanSupportCosmos)
+                {
+                    logger.LogWarning("Support for Cosmos has been enabled, therefore Transaction support has been disabled");
+                }
+
+                return new MongoDbClient(options.CurrentValue.DbConnection, !options.CurrentValue.CanSupportCosmos);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Failed to create mongo client and/or database", new
+                {
+                    MongoConnection = options.CurrentValue.DbConnection,
+                    DatabaseName = options.CurrentValue.DbName
+                });
+                throw;
+            }
         }
     }
 }

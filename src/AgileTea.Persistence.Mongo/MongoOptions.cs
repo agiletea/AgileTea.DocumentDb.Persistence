@@ -21,6 +21,12 @@ namespace AgileTea.Persistence.Mongo
         public string DbName { get; set; } = default!;
 
         /// <summary>
+        /// Gets or set whether to support Cosmos Db. Default is false
+        /// Note: setting this to true will switch off support for transactions within the Mongo Context
+        /// </summary>
+        public bool CanSupportCosmos { get; set; } = false;
+
+        /// <summary>
         /// Gets or sets how Guids are represented in string format. Defaults to <see cref="GuidRepresentation.CSharpLegacy"/>
         /// </summary>
         public GuidRepresentation GuidRepresentation { get; set; } = GuidRepresentation.CSharpLegacy;
