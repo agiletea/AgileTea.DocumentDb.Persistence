@@ -45,5 +45,10 @@ namespace AgileTea.Persistence.Mongo
         /// Gets or sets how enums are returned from the store. Defaults to <see cref="string"/>
         /// </summary>
         public EnumRepresentation EnumRepresentation { get; set; } = EnumRepresentation.String;
+
+        /// <summary>
+        /// Gets or sets whether to use camelCaseConvention. Defaults to <c>true</c>
+        /// </summary>
+        public bool UseCamelCaseConvention { get; set; } = true;
     }
 }

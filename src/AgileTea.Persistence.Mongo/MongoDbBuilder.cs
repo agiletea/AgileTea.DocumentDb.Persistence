@@ -93,6 +93,11 @@ namespace AgileTea.Persistence.Mongo
                 new IgnoreIfDefaultConvention(options.CurrentValue.IgnoreIfDefaultConvention)
             };
 
+            if (options.CurrentValue.UseCamelCaseConvention)
+            {
+                pack.Add(new CamelCaseElementNameConvention());
+            }
+
             ConventionRegistry.Register("Configured Solution Conventions", pack, t => true);
         }
     }
