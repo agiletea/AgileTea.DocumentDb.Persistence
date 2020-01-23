@@ -16,15 +16,15 @@
     <PackageIconUrl></PackageIconUrl>
     <PackageIcon>NugetIcon.png</PackageIcon>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.1.0-preview1.20200118.1</Version>
+    <Version>1.1.0-preview2.20200123.1</Version>
     <PackageReleaseNotes>
       Added support for Cosmos Db using the MongoDb Api wire protocol.
       Note that enabling this optional suport will disable transactionality for write operations.
       See Readme at https://github.com/agiletea/AgileTea.DocumentDb.Persistence for more details.
 </PackageReleaseNotes>
-    <AssemblyVersion>1.1.0.1</AssemblyVersion>
-    <FileVersion>1.1.0.1</FileVersion>
-    <PackageVersion>1.1.0-preview1.20200118.1</PackageVersion>
+    <AssemblyVersion>1.1.0.2</AssemblyVersion>
+    <FileVersion>1.1.0.2</FileVersion>
+    <PackageVersion>1.1.0-preview2.20200123.1</PackageVersion>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
