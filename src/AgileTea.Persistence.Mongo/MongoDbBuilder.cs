@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using AgileTea.Persistence.Mongo.Enums;
 using AgileTea.Persistence.Mongo.Mappings;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -19,10 +18,7 @@ namespace AgileTea.Persistence.Mongo
         Justification = "Configuration builder interface, classes and extensions to be used within ConfigureServices. Easier to keep this altogether")]
     public interface IMongoDbBuilder
     {
-        /// <summary>
-        /// Registers the convention pack configured by the options and registers any provided mappings
-        /// </summary>
-        void RegisterMongo();
+        // empty on purpose - used for service configuration through extension methods
     }
 
     /// <summary>
@@ -72,19 +68,14 @@ namespace AgileTea.Persistence.Mongo
         Justification = "Configuration builder interface, classes and extensions to be used within ConfigureServices. Easier to keep this altogether")]
     internal class MongoBdBuilder : IMongoDbBuilder
     {
-        private readonly IOptionsMonitor<MongoOptions> options;
-
-        public MongoBdBuilder(IServiceCollection services)
+        public MongoBdBuilder(IOptionsMonitor<MongoOptions> options)
         {
-            var builder = services.BuildServiceProvider();
-            options = builder.GetService<IOptionsMonitor<MongoOptions>>();
+            RegisterMongo(options);
         }
 
-        public void RegisterMongo()
+        private void RegisterMongo(IOptionsMonitor<MongoOptions> options)
         {
             BsonDefaults.GuidRepresentation = options.CurrentValue.GuidRepresentation;
-
-            BaseMap.Map();
 
             var pack = new ConventionPack
             {
@@ -99,6 +90,8 @@ namespace AgileTea.Persistence.Mongo
             }
 
             ConventionRegistry.Register("Configured Solution Conventions", pack, t => true);
+
+            BaseMap.Map();
         }
     }
 }

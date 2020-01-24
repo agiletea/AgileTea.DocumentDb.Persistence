@@ -4,6 +4,7 @@ using AgileTea.Persistence.Common;
 using AgileTea.Persistence.Mongo.Client;
 using AgileTea.Persistence.Mongo.Context;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace AgileTea.Persistence.Mongo
 {
@@ -35,7 +36,9 @@ namespace AgileTea.Persistence.Mongo
             services.AddScoped<IMongoContext, MongoContext>();
             services.Configure(options);
 
-            return new MongoBdBuilder(services);
+            var builder = services.BuildServiceProvider();
+
+            return new MongoBdBuilder(builder.GetService<IOptionsMonitor<MongoOptions>>());
         }
     }
 }
