@@ -5,6 +5,24 @@
 
 Setup code for accessing  a document based database through repository-based code. Includes specific set up for [MongoDb][0].
 
+## 1.1.0 Released
+
+Suport for Cosmos Db added through the MongoDb wire protocol.
+
+Fix applied to ensure Mongo conventions are applied before class mappings. Not this removes the need (and ability) to call the RegisterMongo() method on startup:
+
+```csharp
+  services.AddMongo(options =>
+  {
+    options.DbConnection = Configuration["mongo:dbConnection"];
+    options.DbName = Configuration["mongo:dbName"];
+  })
+  .AddMappings<SomeClass>(
+    map => map.MapMember(x => x.SomeProperty).SetIsRequired(true),
+    map => map.MapMember(x => x.SomeOtherProperty).SetIsRequired(true);
+ // .RegisterMongo; (NO LONGER NEEDED - REMOVE IN EXISTING CODE!)
+```
+
 ## Installation
 
 AgileTea.Persistence.Mongo installs through [NuGet][1] and requires [.NET Standard][2] >= [2.0][3].
@@ -52,8 +70,7 @@ public void ConfigureServices(IServiceCollection services)
   })
   .AddMappings<SomeClass>(
     map => map.MapMember(x => x.SomeProperty).SetIsRequired(true),
-    map => map.MapMember(x => x.SomeOtherProperty).SetIsRequired(true)
-  .RegisterMongo();
+    map => map.MapMember(x => x.SomeOtherProperty).SetIsRequired(true);
 
   // ...
 }
@@ -78,8 +95,7 @@ public void ConfigureServices(IServiceCollection services)
   })
   .AddMappings<SomeClass>(
     map => map.MapMember(x => x.SomeProperty).SetIsRequired(true),
-    map => map.MapMember(x => x.SomeOtherProperty).SetIsRequired(true)
-  .RegisterMongo();
+    map => map.MapMember(x => x.SomeOtherProperty).SetIsRequired(true);
 
   // ...
 }
