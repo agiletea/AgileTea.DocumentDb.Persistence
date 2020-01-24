@@ -1,7 +1,5 @@
 ﻿using System;
 using AgileTea.Persistence.Common.Entities;
-using AgileTea.Persistence.Mongo.Mappings;
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using Xunit;
@@ -13,10 +11,6 @@ namespace AgileTea.Persistence.Mongo.Tests.Conventions
         [Fact]
         public void GivenACamelCaseConventionPack_WhenAppliedToAClassInheritingFromIndexIdentityBase_ThenPropertyNamesComeOutAsCamelCase()
         {
-            BsonDefaults.GuidRepresentation = GuidRepresentation.CSharpLegacy;
-
-            BaseMap.Map();
-
             var convention = new CamelCaseElementNameConvention();
 
             var classMap = new BsonClassMap<TestClass>();
