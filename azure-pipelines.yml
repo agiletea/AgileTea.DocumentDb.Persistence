@@ -5,7 +5,15 @@
 
 # the build will trigger on any changes to the master branch
 trigger:
-- master
+  branches:
+    include:
+    - master
+  paths:
+    exclude:
+    - README.md
+    - azure-pipelines.yml
+    - LICENSE
+    - .gitignore
 
 # the build will run on a Microsoft hosted agent, using the lastest Windows VM Image
 pool:
