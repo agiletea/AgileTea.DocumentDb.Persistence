@@ -9,7 +9,7 @@ Setup code for accessing  a document based database through repository-based cod
 
 Suport for Cosmos Db added through the MongoDb wire protocol.
 
-Fix applied to ensure Mongo conventions are applied before class mappings. Not this removes the need (and ability) to call the RegisterMongo() method on startup:
+Fix applied to ensure Mongo conventions are applied before class mappings. Note this removes the need (and ability) to call the RegisterMongo() method on startup:
 
 ```csharp
   services.AddMongo(options =>
