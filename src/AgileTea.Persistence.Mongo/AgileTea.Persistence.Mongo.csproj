@@ -22,12 +22,13 @@
       Note that enabling this optional suport will disable transactionality for write operations.
       See Readme at https://github.com/agiletea/AgileTea.DocumentDb.Persistence for more details.
 
-      FIXES
+FIXES
       The mongo conventions set in the options are now applied earlier to stop them from not having any 
       effect on classes for which mappings have been added.
 
-      BREAKING CHANGES
-      Due to the above fix the methjod 'RegisterMongo' is no longer public and does need to be called. Simply remove the call.
+BREAKING CHANGES
+      Due to the above fix the methjod 'RegisterMongo' is no longer public and does not need to be called. 
+      Simply remove the call.
       See Readme at https://github.com/agiletea/AgileTea.DocumentDb.Persistence for more details.
 </PackageReleaseNotes>
     <AssemblyVersion>1.1.0.10</AssemblyVersion>
