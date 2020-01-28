@@ -12,6 +12,9 @@ trigger:
     exclude:
     - README.md;azure-pipelines.yml;LICENSE;.gitignore
 
+# stop 2 build trigger from the submission of the Pull Request so we only get one from the CI merge
+pr: none
+
 # the build will run on a Microsoft hosted agent, using the lastest Windows VM Image
 pool:
   vmImage: 'windows-latest'
