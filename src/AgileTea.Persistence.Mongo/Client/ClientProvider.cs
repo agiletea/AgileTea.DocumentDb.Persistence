@@ -11,8 +11,8 @@ namespace AgileTea.Persistence.Mongo.Client
     {
         private readonly IOptionsMonitor<MongoOptions> options;
         private readonly ILogger logger;
-        private Lazy<IMongoDbClient> client;
-        private Lazy<IMongoDatabase> database;
+        private Lazy<IMongoDbClient>? client;
+        private Lazy<IMongoDatabase>? database;
 
         public ClientProvider(
             IOptionsMonitor<MongoOptions> options,

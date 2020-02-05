@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <CodeAnalysisRuleSet>..\..\CodeAnalysisRuleSet.ruleset</CodeAnalysisRuleSet>
+    <Nullable>Enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Description>Sets up connection to a Mongo Database with simple mappings and repository pattern approach</Description>
@@ -16,7 +17,7 @@
     <PackageIconUrl></PackageIconUrl>
     <PackageIcon>NugetIcon.png</PackageIcon>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.1.0</Version>
+    <Version>1.2.0-preview8.20200205</Version>
     <PackageReleaseNotes>
       Added support for Cosmos Db using the MongoDb Api wire protocol.
       Note that enabling this optional suport will disable transactionality for write operations.
@@ -31,9 +32,9 @@ BREAKING CHANGES
       Simply remove the call.
       See Readme at https://github.com/agiletea/AgileTea.DocumentDb.Persistence for more details.
 </PackageReleaseNotes>
-    <AssemblyVersion>1.1.0.10</AssemblyVersion>
-    <FileVersion>1.1.0.10</FileVersion>
-    <PackageVersion>1.1.0</PackageVersion>
+    <AssemblyVersion>1.2.0.08</AssemblyVersion>
+    <FileVersion>1.2.0.08</FileVersion>
+    <PackageVersion>1.2.0-preview8.20200208</PackageVersion>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
@@ -82,4 +83,9 @@ BREAKING CHANGES
       <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
     </ItemGroup>
   </Target>
+
+  <!-- 👇 disable the nullable warnings when compiling for .NET Standard 2.0 -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <NoWarn>$(NoWarn);8600;8601;8602;8603;8604</NoWarn>
+  </PropertyGroup>
 </Project>

@@ -14,7 +14,7 @@ namespace AgileTea.Persistence.Mongo.Context
         private readonly IClientProvider clientProvider;
         private readonly List<Func<Task>> commands;
         private readonly ILogger logger;
-        private IClientSessionHandle session;
+        private IClientSessionHandle? session;
 
         public MongoContext(
             IClientProvider clientProvider,

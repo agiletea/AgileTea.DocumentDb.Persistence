@@ -68,23 +68,28 @@ namespace AgileTea.Persistence.Mongo
         Justification = "Configuration builder interface, classes and extensions to be used within ConfigureServices. Easier to keep this altogether")]
     internal class MongoBdBuilder : IMongoDbBuilder
     {
-        public MongoBdBuilder(IOptionsMonitor<MongoOptions> options)
+        public MongoBdBuilder(IOptions<MongoOptions> options)
         {
-            RegisterMongo(options);
+            if (options?.Value == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            RegisterMongo(options!.Value);
         }
 
-        private void RegisterMongo(IOptionsMonitor<MongoOptions> options)
+        private void RegisterMongo(MongoOptions options)
         {
-            BsonDefaults.GuidRepresentation = options.CurrentValue.GuidRepresentation;
+            BsonDefaults.GuidRepresentation = options.GuidRepresentation;
 
             var pack = new ConventionPack
             {
-                new EnumRepresentationConvention(options.CurrentValue.EnumRepresentation == EnumRepresentation.Numeric ? BsonType.Int32 : BsonType.String),
-                new IgnoreExtraElementsConvention(options.CurrentValue.IgnoreExtraElementsConvention),
-                new IgnoreIfDefaultConvention(options.CurrentValue.IgnoreIfDefaultConvention)
+                new EnumRepresentationConvention(options.EnumRepresentation == EnumRepresentation.Numeric ? BsonType.Int32 : BsonType.String),
+                new IgnoreExtraElementsConvention(options.IgnoreExtraElementsConvention),
+                new IgnoreIfDefaultConvention(options.IgnoreIfDefaultConvention)
             };
 
-            if (options.CurrentValue.UseCamelCaseConvention)
+            if (options.UseCamelCaseConvention)
             {
                 pack.Add(new CamelCaseElementNameConvention());
             }
