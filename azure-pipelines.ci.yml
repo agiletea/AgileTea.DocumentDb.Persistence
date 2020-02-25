@@ -65,3 +65,4 @@ steps:
   inputs:
     codeCoverageTool: 'cobertura'
     summaryFileLocation: '$(Build.SourcesDirectory)/**/coverlet.json'
+    pathToSources: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
