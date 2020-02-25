@@ -34,7 +34,7 @@ steps:
 
 -task: SonarCloudPrepare@1
   inputs:
-    SonarCloud: ''
+    SonarCloud: 'AgileTea Document Persistence'
     organization: 'agiletea'
     projectKey: 'agiletea_AgileTea.DocumentDb.Persistence'
     projectName: 'AgileTea.DocumentDb.Persistence'
