@@ -51,7 +51,7 @@ steps:
   displayName: 'Run unit tests - $(configuration)'
   inputs:
     command: test
-    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutputFormat="cobertura%2copencover" /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
+    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutputFormat="cobertura%2copencover" /p:CoverletOutput=../TestResults/Coverage/'
     publishTestResults: true
     projects: 'AgileTea.Persistence.sln'
     configuration: $(configuration)
