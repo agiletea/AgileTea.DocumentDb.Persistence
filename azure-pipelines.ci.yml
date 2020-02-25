@@ -32,7 +32,7 @@ steps:
     command: 'restore'
     projects: 'AgileTea.Persistence.sln'
 
--task: SonarCloudPrepare@1
+- task: SonarCloudPrepare@1
   inputs:
     SonarCloud: 'AgileTea Document Persistence'
     organization: 'agiletea'
