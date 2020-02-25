@@ -51,9 +51,26 @@ steps:
   displayName: 'Run unit tests on Tests - $(configuration)'
   inputs:
     command: test
-    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutputFormat="cobertura%2copencover%2cjson" /p:CoverletOutput=../TestResults/Coverage/ /p:MergeWith=../TestResults/coverlet.json'
-    publishTestResults: true
+    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/Coverage/'
     projects: '**/*[Tt]ests.csproj'
+    configuration: $(configuration)
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run unit tests on Common Tests - $(configuration)'
+  inputs:
+    command: test
+    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/Coverage/'
+    publishTestResults: true
+    projects: 'src/AgileTea.Persistence.Common.Tests/AgileTea.Persistence.Common.Tests.csproj'
+    configuration: $(configuration)
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run unit tests on Mongo Tests - $(configuration)'
+  inputs:
+    command: test
+    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/Coverage/ /p:MergeWith="../TestResults/Coverage/coverage.json" /p:CoverletOutputFormat="cobertura%2copencover"'
+    publishTestResults: true
+    projects: 'src/AgileTea.Persistence.Mongo.Tests/AgileTea.Persistence.Mongo.Tests.csproj'
     configuration: $(configuration)
 
 - script: |
