@@ -48,12 +48,21 @@ steps:
     arguments: 'install --global dotnet-reportgenerator-globaltool'
     
 - task: DotNetCoreCLI@2
-  displayName: 'Run unit tests - $(configuration)'
+  displayName: 'Run unit tests on Common Tests - $(configuration)'
   inputs:
     command: test
-    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutputFormat="cobertura%2copencover" /p:CoverletOutput=../TestResults/Coverage/'
+    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutputFormat="cobertura%2copencover" /p:CoverletOutput=../TestResults/Coverage/ /p:Exclude="[AgileTea.Persistence.Mongo.*]*"'
     publishTestResults: true
-    projects: 'AgileTea.Persistence.sln'
+    projects: 'src/AgileTea.Persistence.Common.Tests/AgileTea.Persistence.Common.Tests.csproj'
+    configuration: $(configuration)
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run unit tests on Mongo Tests - $(configuration)'
+  inputs:
+    command: test
+    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutputFormat="cobertura%2copencover" /p:CoverletOutput=../TestResults/Coverage/ /p:Exclude="[AgileTea.Persistence.Common.*]*"'
+    publishTestResults: true
+    projects: 'src/AgileTea.Persistence.Mongo.Tests/AgileTea.Persistence.Mongo.Tests.csproj'
     configuration: $(configuration)
 
 - script: |
