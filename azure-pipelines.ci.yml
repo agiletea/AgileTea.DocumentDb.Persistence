@@ -25,13 +25,15 @@ steps:
   displayName: 'Restore sln dependencies'
   inputs:
     command: 'restore'
+    projects: 'AgileTea.Persistence.sln'
 
 - task: DotNetCoreCLI@2
   displayName: 'Build the solution'
   inputs:
     command: 'build'
     arguments: '--no-restore'
-    configuration: $(configuration)   
+    configuration: $(configuration)
+    projects: 'AgileTea.Persistence.sln'   
 
 - task: DotNetCoreCLI@2
   displayName: 'Install Report Generator tool'
@@ -46,7 +48,7 @@ steps:
     command: test
     arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutputFormat="cobertura%2copencover" /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
     publishTestResults: true
-    projects: '**/*[Tt]ests.csproj'
+    projects: 'AgileTea.Persistence.sln'
     configuration: $(configuration)
 
 - script: |
