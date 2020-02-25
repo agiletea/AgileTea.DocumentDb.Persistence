@@ -48,26 +48,17 @@ steps:
     arguments: 'install --global dotnet-reportgenerator-globaltool'
     
 - task: DotNetCoreCLI@2
-  displayName: 'Run unit tests on Common Tests - $(configuration)'
+  displayName: 'Run unit tests on Tests - $(configuration)'
   inputs:
     command: test
-    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutputFormat="cobertura%2copencover" /p:CoverletOutput=TestResults/Coverage/ /p:Exclude="[AgileTea.Persistence.Mongo.*]*"'
+    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutputFormat="cobertura%2copencover%2cjson" /p:CoverletOutput=../TestResults/Coverage/ /p:MergeWith=../TestResults/coverlet.json'
     publishTestResults: true
-    projects: 'src/AgileTea.Persistence.Common.Tests/AgileTea.Persistence.Common.Tests.csproj'
-    configuration: $(configuration)
-
-- task: DotNetCoreCLI@2
-  displayName: 'Run unit tests on Mongo Tests - $(configuration)'
-  inputs:
-    command: test
-    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutputFormat="cobertura%2copencover" /p:CoverletOutput=TestResults/Coverage/ /p:Exclude="[AgileTea.Persistence.Common]*"'
-    publishTestResults: true
-    projects: 'src/AgileTea.Persistence.Mongo.Tests/AgileTea.Persistence.Mongo.Tests.csproj'
+    projects: '**/*[Tt]ests.csproj'
     configuration: $(configuration)
 
 - script: |
     reportgenerator 
-    -reports:"$(Build.SourcesDirectory)/src/AgileTea.Persistence.Mongo.Tests/TestResults/Coverage/coverage.cobertura.xml;$(Build.SourcesDirectory)/src/AgileTea.Persistence.Common.Tests/TestResults/Coverage/coverage.cobertura.xml"
+    -reports:"$(Build.SourcesDirectory)/**/coverage.cobertura.xml"
     -targetdir:$(Build.SourcesDirectory)/CodeCoverage 
     -reporttypes:HtmlInline_AzurePipelines
   displayName: 'Create code coverage report'
@@ -76,4 +67,4 @@ steps:
   displayName: 'Publish code coverage report'
   inputs:
     codeCoverageTool: 'cobertura'
-    summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
+    summaryFileLocation: '$(Build.SourcesDirectory)/**/coverlet.json'
