@@ -3,8 +3,8 @@
 # Add steps that run tests, create a NuGet package, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
-# the build will ne triggered by a branch policy on the master branch (i.e. through a Pull Request)
-trigger: none
+pr:
+ - master
 
 # the build will run on a Microsoft hosted agent, using the lastest Windows VM Image
 pool:
