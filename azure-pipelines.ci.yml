@@ -1,0 +1,59 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+# the build will ne triggered by a branch policy on the master branch (i.e. through a Pull Request)
+trigger: none
+
+# the build will run on a Microsoft hosted agent, using the lastest Windows VM Image
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  configuration: 'Release'
+
+steps:
+
+# sonar requirement - cannot analyse projects built using the dotnet core 3.x sdk so need to downgrade the sdk
+- task: UseDotNet@2
+  displayName: 'Dropping .net core sdk to 2.1.505 for SonarCloud'
+  inputs:
+    version: '2.1.505'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Restore sln dependencies'
+  inputs:
+    command: 'restore'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build the solution'
+  inputs:
+    command: 'build'
+    arguments: '--no-restore'
+    configuration: $(configuration)   
+
+- task: DotNetCoreCLI@2
+  displayName: 'Install Report Generator tool'
+  inputs:
+    command: custom
+    custom: tool
+    arguments: 'install --global dotnet-reportgenerator-globaltool'
+    
+- task: DotNetCoreCLI@2
+  displayName: 'Run unit tests - $(configuration)'
+  inputs:
+    command: test
+    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutputFormat="cobertura%2copencover" /p:CoverletOutput=$(Build.SourceDirectory)/TestResults/Coverage/'
+    publishTestResults: true
+    projects: '**/*[Tt]ests.csproj'
+    configuration: $(configuration)
+
+- script: |
+  reportgenerator -reports:$(Build.SourcesDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/TestResults/Reports/ -reporttypes:HtmlInline_AzurePipelines
+
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage report'
+  inputs:
+    codeCoverageTool: 'cobertura'
+    summaryFileLocation: '$(Build.SourcesDirectory/**/coverage.cobertura.xml)'
