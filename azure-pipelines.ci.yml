@@ -1,0 +1,99 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+pr:
+ - master
+
+# the build will run on a Microsoft hosted agent, using the lastest Windows VM Image
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  configuration: 'Release'
+  dotnetSdkVersion: '3.1.102'
+
+steps:
+- task: UseDotNet@2
+  displayName: 'Use dotnet Core SDk $(dotnetSdkVersion)'
+  inputs:
+    version: '$(dotnetSdkVersion)'
+
+# sonar requirement - cannot analyse projects built using the dotnet core 3.x sdk so need to downgrade the sdk
+- task: UseDotNet@2
+  displayName: 'Dropping .net core sdk to 2.1.505 for SonarCloud'
+  inputs:
+    version: '2.1.505'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Restore sln dependencies'
+  inputs:
+    command: 'restore'
+    projects: 'AgileTea.Persistence.sln'
+
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'AgileTea Document Persistence'
+    organization: 'agiletea'
+    projectKey: 'agiletea_AgileTea.DocumentDb.Persistence'
+    projectName: 'AgileTea.DocumentDb.Persistence'
+    extraProperties: |
+      sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/coverage.opencover.xml
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build the solution'
+  inputs:
+    command: 'build'
+    arguments: '--no-restore'
+    configuration: $(configuration)
+    projects: 'AgileTea.Persistence.sln'   
+
+- task: DotNetCoreCLI@2
+  displayName: 'Install Report Generator tool'
+  inputs:
+    command: custom
+    custom: tool
+    arguments: 'install --global dotnet-reportgenerator-globaltool'
+    
+- task: DotNetCoreCLI@2
+  displayName: 'Run unit tests on Tests - $(configuration)'
+  inputs:
+    command: test
+    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/Coverage/'
+    projects: '**/*[Tt]ests.csproj'
+    configuration: $(configuration)
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run unit tests on Common Tests - $(configuration)'
+  inputs:
+    command: test
+    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/Coverage/'
+    publishTestResults: true
+    projects: 'src/AgileTea.Persistence.Common.Tests/AgileTea.Persistence.Common.Tests.csproj'
+    configuration: $(configuration)
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run unit tests on Mongo Tests - $(configuration)'
+  inputs:
+    command: test
+    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/Coverage/ /p:MergeWith="../TestResults/Coverage/coverage.json" /p:CoverletOutputFormat="cobertura%2copencover"'
+    publishTestResults: true
+    projects: 'src/AgileTea.Persistence.Mongo.Tests/AgileTea.Persistence.Mongo.Tests.csproj'
+    configuration: $(configuration)
+
+- script: |
+    reportgenerator -reports:"$(Build.SourcesDirectory)/**/coverage.cobertura.xml" -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines
+  displayName: 'Create code coverage report'
+
+- task: SonarCloudAnalyze@1
+  displayName: 'Run SonarCloud code analysis'
+
+- task: SonarCloudPublish@1
+  displayName: 'Publish SonarCloud analysis results'
+
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage report'
+  inputs:
+    codeCoverageTool: 'cobertura'
+    summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
