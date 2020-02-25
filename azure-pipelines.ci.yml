@@ -32,6 +32,15 @@ steps:
     command: 'restore'
     projects: 'AgileTea.Persistence.sln'
 
+-task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: ''
+    organization: 'agiletea'
+    projectKey: 'agiletea_AgileTea.DocumentDb.Persistence'
+    projectName: 'AgileTea.DocumentDb.Persistence'
+    extraProperties: |
+      sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/coverage.opencover.xml
+
 - task: DotNetCoreCLI@2
   displayName: 'Build the solution'
   inputs:
@@ -76,6 +85,12 @@ steps:
 - script: |
     reportgenerator -reports:"$(Build.SourcesDirectory)/**/coverage.cobertura.xml" -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines
   displayName: 'Create code coverage report'
+
+- task: SonarCloudAnalyze@1
+  displayName: 'Run SonarCloud code analysis'
+
+- task: SonarCloudPublish@1
+  displayName: 'Publish SonarCloud analysis results'
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage report'
