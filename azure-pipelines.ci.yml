@@ -60,7 +60,7 @@ steps:
   displayName: 'Run unit tests on Mongo Tests - $(configuration)'
   inputs:
     command: test
-    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutputFormat="cobertura%2copencover" /p:CoverletOutput=../TestResults/Coverage/ /p:Exclude="[AgileTea.Persistence.Common.*]*"'
+    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutputFormat="cobertura%2copencover" /p:CoverletOutput=../TestResults/Coverage/ /p:Exclude="[AgileTea.Persistence.Common]*"'
     publishTestResults: true
     projects: 'src/AgileTea.Persistence.Mongo.Tests/AgileTea.Persistence.Mongo.Tests.csproj'
     configuration: $(configuration)
