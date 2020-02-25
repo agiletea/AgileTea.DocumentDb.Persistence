@@ -44,13 +44,14 @@ steps:
   displayName: 'Run unit tests - $(configuration)'
   inputs:
     command: test
-    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutputFormat="cobertura%2copencover" /p:CoverletOutput=$(Build.SourceDirectory)/TestResults/Coverage/'
+    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutputFormat="cobertura%2copencover" /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
     publishTestResults: true
     projects: '**/*[Tt]ests.csproj'
     configuration: $(configuration)
 
 - script: |
   reportgenerator -reports:$(Build.SourcesDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/TestResults/Reports/ -reporttypes:HtmlInline_AzurePipelines
+  displayName: 'Create code coverage report'
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage report'
