@@ -66,7 +66,10 @@ steps:
     configuration: $(configuration)
 
 - script: |
-    reportgenerator -reports:$(Build.SourcesDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines
+    reportgenerator 
+    -reports:"$(Build.SourcesDirectory)/src/AgileTea.Persistence.Mongo.Tests/TestResults/Coverage/coverage.cobertura.xml;$(Build.SourcesDirectory)/src/AgileTea.Persistence.Common.Tests/TestResults/Coverage/coverage.cobertura.xml"
+    -targetdir:$(Build.SourcesDirectory)/CodeCoverage 
+    -reporttypes:HtmlInline_AzurePipelines
   displayName: 'Create code coverage report'
 
 - task: PublishCodeCoverageResults@1
