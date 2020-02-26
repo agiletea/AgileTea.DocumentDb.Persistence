@@ -58,15 +58,8 @@ steps:
     command: custom
     custom: tool
     arguments: 'install --global dotnet-reportgenerator-globaltool'
-    
-- task: DotNetCoreCLI@2
-  displayName: 'Run unit tests on Tests - $(configuration)'
-  inputs:
-    command: test
-    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutput=../TestResults/Coverage/'
-    projects: '**/*[Tt]ests.csproj'
-    configuration: $(configuration)
 
+    # need to split out the test projects to enable merging of the coverage results
 - task: DotNetCoreCLI@2
   displayName: 'Run unit tests on Common Tests - $(configuration)'
   inputs:
