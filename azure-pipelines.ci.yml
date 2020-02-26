@@ -59,7 +59,7 @@ steps:
     custom: tool
     arguments: 'install --global dotnet-reportgenerator-globaltool'
 
-    # need to split out the test projects to enable merging of the coverage results
+# need to split out the test projects to enable merging of the coverage results - the first should use the default coverlet json output format
 - task: DotNetCoreCLI@2
   displayName: 'Run unit tests on Common Tests - $(configuration)'
   inputs:
@@ -69,6 +69,7 @@ steps:
     projects: 'src/AgileTea.Persistence.Common.Tests/AgileTea.Persistence.Common.Tests.csproj'
     configuration: $(configuration)
 
+# this test task needs to switch the format to cobertura AND perform a MERGE with the coverage.json created in the last step
 - task: DotNetCoreCLI@2
   displayName: 'Run unit tests on Mongo Tests - $(configuration)'
   inputs:
