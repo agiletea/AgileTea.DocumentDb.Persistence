@@ -21,20 +21,19 @@ pool:
 
 variables:
   configuration: 'Release'
+  dotnetSdkVersion: '5.0.x'
 
 steps:
+- task: UseDotNet@2
+  displayName: 'Use dotnet Core SDk $(dotnetSdkVersion)'
+  inputs:
+    version: '$(dotnetSdkVersion)'
 
 - task: DotNetCoreCLI@2
   displayName: dotnet build
   inputs:
     command: build
-    configuration: $(configuration)
-    
-- task: DotNetCoreCLI@2
-  displayName: dotnet test
-  inputs:
-    command: test
-    projects: '**/*[Tt]ests.csproj'
+    arguments: '--no-restore'
     configuration: $(configuration)
 
 - task: DotNetCoreCLI@2
