@@ -6,6 +6,51 @@
 
 Setup code for accessing  a document based database through repository-based code. Includes specific set up for [MongoDb][0].
 
+## 2.0.0 BETA Released
+
+Upgrade to dotnet 5.0 and addition of Mongo Db ObjectId based document/ repository in addition to the current GUID Id based document/ repository.
+This fits inline with requirements that align more closely with using the Mongo Db ObjectId as an identifier instead of a GUID.
+
+It also allows for a Timestamp based indexed entity to be used that allows the developer to access the created timestamp from the ObjectId as well as the option to set a timestamp on update to provide a LastUpdated timestamp as well.
+
+```csharp
+public class ExampleDocument : TimestampedIndexedEntityBase
+{
+    public string Title { get; set; } = default!;
+}
+
+public class ExampleDocumentRepository : ObjectIdDocumentRespositoryBase<ExampleDocument>
+{
+    // std ctor
+}
+
+
+public class ExampleUpdateService
+{
+    private readonly ExampleDocumentRepository repository;
+
+    internal ExampleUpdateService(ExampleDocumentRespository repository)
+    {
+        this.repository = repository;
+    }
+
+    public async Task<ExampleDocument> CreateDocument(string title)
+    {
+        var document = new ExampleDocument
+        {
+            Title = title
+        };
+
+        document.SetTimestamp();
+
+        using var unitOfWork = unitOfWorkFactory.CreateUnitOfWork(repository);
+        repository.Add(document);
+        await unitOfWork.CommitAsync();
+        return document;
+    }
+}
+```
+
 ## 1.1.0 Released
 
 Suport for Cosmos Db added through the MongoDb wire protocol.
