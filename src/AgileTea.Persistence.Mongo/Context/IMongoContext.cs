@@ -1,5 +1,4 @@
 ﻿using AgileTea.Persistence.Common.Contexts;
-using AgileTea.Persistence.Common.Entities;
 using MongoDB.Driver;
 
 namespace AgileTea.Persistence.Mongo.Context
@@ -13,9 +12,8 @@ namespace AgileTea.Persistence.Mongo.Context
         /// Gets a mongo collection for the given document type
         /// </summary>
         /// <param name="name">Name of the document type</param>
-        /// <typeparam name="TDocument">Document - must be of type <see cref="AgileTea.Persistence.Common.Entities.IndexedEntityBase"/></typeparam>
+        /// <typeparam name="TDocument">Document type</typeparam>
         /// <returns>A mongo collection of type <c>TDocument</c></returns>
-        IMongoCollection<TDocument> GetCollection<TDocument>(string name)
-            where TDocument : IndexedEntityBase;
+        IMongoCollection<TDocument> GetCollection<TDocument>(string name);
     }
 }

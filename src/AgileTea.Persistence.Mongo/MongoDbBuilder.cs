@@ -25,10 +25,6 @@ namespace AgileTea.Persistence.Mongo
     /// Extension class for adding bson mappings for mongo registration
     /// </summary>
     [ExcludeFromCodeCoverage]
-    [SuppressMessage(
-        "StyleCop.CSharp.DocumentationRules",
-        "SA1649:File name should match first type name",
-        Justification = "Configuration builder interface, classes and extensions to be used within ConfigureServices. Easier to keep this altogether")]
     public static class MongoDbBuilderExtensions
     {
         /// <summary>
@@ -91,7 +87,8 @@ namespace AgileTea.Persistence.Mongo
 
             ConventionRegistry.Register("Configured Solution Conventions", pack, t => true);
 
-            BaseMap.Map();
+            BaseMap.MapGuidIndexedEntity();
+            BaseMap.MapObjectIdIndexedEntity();
         }
     }
 }

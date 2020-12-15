@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 using AgileTea.Persistence.Common.Contexts;
 using AgileTea.Persistence.Common.Entities;
 using AgileTea.Persistence.Common.Repository;
-using Microsoft.Extensions.Logging;
-using Moq;
 using Xunit;
 
 namespace AgileTea.Persistence.Common.Tests.Repository
@@ -17,10 +15,9 @@ namespace AgileTea.Persistence.Common.Tests.Repository
         {
             // arrange
             var context = new TestContext();
-            var logger = Mock.Of<ILogger>();
 
             // act
-            var target = new TestRepository(context, logger);
+            var target = new TestRepository(context);
 
             // assert
             Assert.Equal(context, target.DbContext);
@@ -31,8 +28,7 @@ namespace AgileTea.Persistence.Common.Tests.Repository
         {
             // arrange
             var context = new TestContext();
-            var logger = Mock.Of<ILogger>();
-            var target = new TestRepository(context, logger);
+            var target = new TestRepository(context);
 
             // act
             target.Dispose();
@@ -41,10 +37,10 @@ namespace AgileTea.Persistence.Common.Tests.Repository
             Assert.True(context.IsDisposed);
         }
 
-        public class TestRepository : RepositoryBase<TestEntity, TestContext>
+        public class TestRepository : RepositoryBase<TestEntity, TestContext, Guid>
         {
-            public TestRepository(TestContext context, ILogger logger)
-                : base(context, logger)
+            public TestRepository(TestContext context)
+                : base(context)
             {
             }
 
@@ -94,6 +90,7 @@ namespace AgileTea.Persistence.Common.Tests.Repository
             public void Dispose()
             {
                 IsDisposed = true;
+                GC.SuppressFinalize(this);
             }
 
             public void AddCommand(Func<Task> func)
@@ -107,7 +104,7 @@ namespace AgileTea.Persistence.Common.Tests.Repository
             }
         }
 
-        public class TestEntity : IndexedEntityBase
+        public class TestEntity : IndexedEntityBase<Guid>
         {
         }
     }

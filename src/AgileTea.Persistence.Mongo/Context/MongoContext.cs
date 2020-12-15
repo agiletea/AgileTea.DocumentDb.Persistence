@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AgileTea.Persistence.Common.Entities;
 using AgileTea.Persistence.Mongo.Client;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
@@ -54,7 +53,6 @@ namespace AgileTea.Persistence.Mongo.Context
         }
 
         public IMongoCollection<TDocument> GetCollection<TDocument>(string name)
-            where TDocument : IndexedEntityBase
         {
             CheckMongo();
 

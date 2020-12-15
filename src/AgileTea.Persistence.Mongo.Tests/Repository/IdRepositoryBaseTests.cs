@@ -13,29 +13,36 @@ using Xunit;
 
 namespace AgileTea.Persistence.Mongo.Tests.Repository
 {
-    public class RepositoryBaseTests
+    public abstract class IdRepositoryBaseTests<TId, TIdDocumentRepository, TIdDocument>
+        where TIdDocument : IndexedEntityBase<TId>, new()
+        where TIdDocumentRepository : DocumentRepositoryBase<TIdDocument, TId>
+        where TId : new()
     {
-        private readonly IMongoContext context = Mock.Of<IMongoContext>();
-        private readonly ILoggerFactory loggerFactory = Mock.Of<ILoggerFactory>();
-        private readonly ILogger<TestDocumentRepository> logger = Mock.Of<ILogger<TestDocumentRepository>>();
+        protected readonly IMongoContext context = Mock.Of<IMongoContext>();
+        protected readonly ILoggerFactory loggerFactory = Mock.Of<ILoggerFactory>();
+        private readonly ILogger<TIdDocumentRepository> logger = Mock.Of<ILogger<TIdDocumentRepository>>();
 
-        public RepositoryBaseTests()
+        protected IdRepositoryBaseTests()
         {
             Mock.Get(loggerFactory)
-                .Setup(x => x.CreateLogger(typeof(TestDocumentRepository).FullName))
+                .Setup(x => x.CreateLogger(typeof(TIdDocumentRepository).FullName))
                 .Returns(logger);
         }
+
+        protected abstract TId Id { get; }
+
+        protected abstract string ExpectedJsonIdFilter { get; }
 
         [Fact]
         public void GivenADocumentRepository_WhenAddIsCalled_CollectionIsTakenFromContextAndInsertIsCalled()
         {
             // arrange
-            var target = new TestDocumentRepository(context, logger);
-            var expected = new TestDocument();
-            var testCollection = Mock.Of<IMongoCollection<TestDocument>>();
+            var target = CreateRepository();
+            var expected = new TIdDocument();
+            var testCollection = Mock.Of<IMongoCollection<TIdDocument>>();
 
             Mock.Get(context)
-                .Setup(x => x.GetCollection<TestDocument>(typeof(TestDocument).Name))
+                .Setup(x => x.GetCollection<TIdDocument>(target.CollectionName))
                 .Returns(testCollection)
                 .Verifiable();
 
@@ -61,17 +68,15 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
         public void GivenADocumentRepository_WhenUpdateIsCalled_CollectionIsTakenFromContextAndReplaceOneIsCalled()
         {
             // arrange
-            var target = new TestDocumentRepository(context, logger);
-            var id = Guid.NewGuid();
-            var expectedJsonFilter = "{ \"_id\" : CSUUID(\"" + id + "\") }";
-            var expected = new TestDocument
+            var target = CreateRepository();
+            var expected = new TIdDocument
             {
-                Id = id
+                Id = Id
             };
-            var testCollection = Mock.Of<IMongoCollection<TestDocument>>();
+            var testCollection = Mock.Of<IMongoCollection<TIdDocument>>();
 
             Mock.Get(context)
-                .Setup(x => x.GetCollection<TestDocument>(typeof(TestDocument).Name))
+                .Setup(x => x.GetCollection<TIdDocument>(target.CollectionName))
                 .Returns(testCollection)
                 .Verifiable();
 
@@ -82,7 +87,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
 
             Mock.Get(testCollection)
                 .Setup(x => x.ReplaceOneAsync(
-                    It.Is<FilterDefinition<TestDocument>>(filter => filter.RenderToJson().Equals(expectedJsonFilter)),
+                    It.Is<FilterDefinition<TIdDocument>>(filter => filter.RenderToJson().Equals(ExpectedJsonIdFilter)),
                     expected,
                     It.IsAny<ReplaceOptions>(),
                     default))
@@ -101,13 +106,11 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
         public void GivenADocumentRepository_WhenRemoveIsCalled_CollectionIsTakenFromContextAndDeleteOneIsCalled()
         {
             // arrange
-            var target = new TestDocumentRepository(context, logger);
-            var testCollection = Mock.Of<IMongoCollection<TestDocument>>();
-            var id = Guid.NewGuid();
-            var expectedJsonFilter = "{ \"_id\" : CSUUID(\"" + id + "\") }";
-
+            var target = CreateRepository();
+            var testCollection = Mock.Of<IMongoCollection<TIdDocument>>();
+            
             Mock.Get(context)
-                .Setup(x => x.GetCollection<TestDocument>(typeof(TestDocument).Name))
+                .Setup(x => x.GetCollection<TIdDocument>(target.CollectionName))
                 .Returns(testCollection)
                 .Verifiable();
 
@@ -118,13 +121,13 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
 
             Mock.Get(testCollection)
                 .Setup(x => x.DeleteOneAsync(
-                    It.Is<FilterDefinition<TestDocument>>(filter => filter.RenderToJson().Equals(expectedJsonFilter)),
+                    It.Is<FilterDefinition<TIdDocument>>(filter => filter.RenderToJson().Equals(ExpectedJsonIdFilter)),
                     default))
                 .Returns(Task.FromResult((DeleteResult)new DeleteResult.Acknowledged(1L)))
                 .Verifiable();
 
             // act
-            target.Remove(id);
+            target.Remove(Id);
 
             // assert
             Mock.Verify(Mock.Get(context));
@@ -135,15 +138,15 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
         public async Task GivenADocumentRepository_WhenGetAllAsyncIsCalled_CollectionIsTakenFromContext()
         {
             // arrange
-            var target = new TestDocumentRepository(context, logger);
-            var testCollection = Mock.Of<IMongoCollection<TestDocument>>();
-            var findCollection = Mock.Of<IAsyncCursor<TestDocument>>();
+            var target = CreateRepository();
+            var testCollection = Mock.Of<IMongoCollection<TIdDocument>>();
+            var findCollection = Mock.Of<IAsyncCursor<TIdDocument>>();
             const string expectedJsonFilter = "{ }";
             int index = 0;
-            var expected = new[] { new TestDocument(), new TestDocument() };
+            var expected = new[] { new TIdDocument(), new TIdDocument() };
 
             Mock.Get(context)
-                .Setup(x => x.GetCollection<TestDocument>(typeof(TestDocument).Name))
+                .Setup(x => x.GetCollection<TIdDocument>(target.CollectionName))
                 .Returns(testCollection)
                 .Verifiable();
 
@@ -161,8 +164,8 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
 
             Mock.Get(testCollection)
                 .Setup(x => x.FindAsync(
-                    It.Is<FilterDefinition<TestDocument>>(filter => filter.RenderToJson().Equals(expectedJsonFilter)),
-                    It.IsAny<FindOptions<TestDocument, TestDocument>>(),
+                    It.Is<FilterDefinition<TIdDocument>>(filter => filter.RenderToJson().Equals(expectedJsonFilter)),
+                    It.IsAny<FindOptions<TIdDocument, TIdDocument>>(),
                     default))
                 .Returns(Task.FromResult(findCollection))
                 .Verifiable();
@@ -180,15 +183,15 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
         public void GivenADocumentRepository_WhenGetAllIsCalled_CollectionIsTakenFromContext()
         {
             // arrange
-            var target = new TestDocumentRepository(context, logger);
-            var testCollection = Mock.Of<IMongoCollection<TestDocument>>();
-            var findCollection = Mock.Of<IAsyncCursor<TestDocument>>();
+            var target = CreateRepository();
+            var testCollection = Mock.Of<IMongoCollection<TIdDocument>>();
+            var findCollection = Mock.Of<IAsyncCursor<TIdDocument>>();
             const string expectedJsonFilter = "{ }";
             int index = 0;
-            var expected = new[] { new TestDocument(), new TestDocument() };
+            var expected = new[] { new TIdDocument(), new TIdDocument() };
 
             Mock.Get(context)
-                .Setup(x => x.GetCollection<TestDocument>(typeof(TestDocument).Name))
+                .Setup(x => x.GetCollection<TIdDocument>(target.CollectionName))
                 .Returns(testCollection)
                 .Verifiable();
 
@@ -206,8 +209,8 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
 
             Mock.Get(testCollection)
                 .Setup(x => x.FindSync(
-                    It.Is<FilterDefinition<TestDocument>>(filter => filter.RenderToJson().Equals(expectedJsonFilter)),
-                    It.IsAny<FindOptions<TestDocument, TestDocument>>(),
+                    It.Is<FilterDefinition<TIdDocument>>(filter => filter.RenderToJson().Equals(expectedJsonFilter)),
+                    It.IsAny<FindOptions<TIdDocument, TIdDocument>>(),
                     default))
                 .Returns(findCollection)
                 .Verifiable();
@@ -225,14 +228,12 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
         public async Task GivenADocumentRepository_WhenGetByIdAsyncIsCalled_CollectionIsTakenFromContext()
         {
             // arrange
-            var target = new TestDocumentRepository(context, logger);
-            var testCollection = Mock.Of<IMongoCollection<TestDocument>>();
-            var id = Guid.NewGuid();
-            var findCollection = Mock.Of<IAsyncCursor<TestDocument>>();
-            var expected = new TestDocument();
-            var expectedJsonFilter = "{ \"_id\" : CSUUID(\"" + id + "\") }";
+            var target = CreateRepository();
+            var testCollection = Mock.Of<IMongoCollection<TIdDocument>>();
+            var findCollection = Mock.Of<IAsyncCursor<TIdDocument>>();
+            var expected = new TIdDocument();
             Mock.Get(context)
-                .Setup(x => x.GetCollection<TestDocument>(typeof(TestDocument).Name))
+                .Setup(x => x.GetCollection<TIdDocument>(target.CollectionName))
                 .Returns(testCollection)
                 .Verifiable();
 
@@ -246,14 +247,14 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
 
             Mock.Get(testCollection)
                 .Setup(x => x.FindAsync(
-                    It.Is<FilterDefinition<TestDocument>>(filter => filter.RenderToJson().Equals(expectedJsonFilter)),
-                    It.IsAny<FindOptions<TestDocument, TestDocument>>(),
+                    It.Is<FilterDefinition<TIdDocument>>(filter => filter.RenderToJson().Equals(ExpectedJsonIdFilter)),
+                    It.IsAny<FindOptions<TIdDocument, TIdDocument>>(),
                     default))
                 .Returns(Task.FromResult(findCollection))
                 .Verifiable();
 
             // act
-            var actual = await target.GetByIdAsync(id).ConfigureAwait(false);
+            var actual = await target.GetByIdAsync(Id).ConfigureAwait(false);
 
             // assert
             Assert.Equal(expected, actual);
@@ -265,14 +266,12 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
         public void GivenADocumentRepository_WhenGetByIdIsCalled_CollectionIsTakenFromContext()
         {
             // arrange
-            var target = new TestDocumentRepository(context, logger);
-            var testCollection = Mock.Of<IMongoCollection<TestDocument>>();
-            var id = Guid.NewGuid();
-            var findCollection = Mock.Of<IAsyncCursor<TestDocument>>();
-            var expected = new TestDocument();
-            var expectedJsonFilter = "{ \"_id\" : CSUUID(\"" + id + "\") }";
+            var target = CreateRepository();
+            var testCollection = Mock.Of<IMongoCollection<TIdDocument>>();
+            var findCollection = Mock.Of<IAsyncCursor<TIdDocument>>();
+            var expected = new TIdDocument();
             Mock.Get(context)
-                .Setup(x => x.GetCollection<TestDocument>(typeof(TestDocument).Name))
+                .Setup(x => x.GetCollection<TIdDocument>(target.CollectionName))
                 .Returns(testCollection)
                 .Verifiable();
 
@@ -286,14 +285,14 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
 
             Mock.Get(testCollection)
                 .Setup(x => x.FindSync(
-                    It.Is<FilterDefinition<TestDocument>>(filter => filter.RenderToJson().Equals(expectedJsonFilter)),
-                    It.IsAny<FindOptions<TestDocument, TestDocument>>(),
+                    It.Is<FilterDefinition<TIdDocument>>(filter => filter.RenderToJson().Equals(ExpectedJsonIdFilter)),
+                    It.IsAny<FindOptions<TIdDocument, TIdDocument>>(),
                     default))
                 .Returns(findCollection)
                 .Verifiable();
 
             // act
-            var actual = target.GetById(id);
+            var actual = target.GetById(Id);
 
             // assert
             Assert.Equal(expected, actual);
@@ -305,9 +304,9 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
         public async Task GivenAnErrorGettingTheCollection_WhenGetAllIsCalled_ExceptionIsThrown()
         {
             // arrange
-            var target = new TestDocumentRepository(context, logger);
+            var target = CreateRepository();
             Mock.Get(context)
-                .Setup(x => x.GetCollection<TestDocument>(typeof(TestDocument).Name))
+                .Setup(x => x.GetCollection<TIdDocument>(target.CollectionName))
                 .Throws(new Exception("Test error message"))
                 .Verifiable();
 
@@ -321,16 +320,6 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
             Mock.Verify(Mock.Get(context));
         }
 
-        public class TestDocumentRepository : DocumentRepositoryBase<TestDocument>
-        {
-            public TestDocumentRepository(IMongoContext context, ILogger logger)
-                : base(context, logger)
-            {
-            }
-        }
-
-        public class TestDocument : IndexedEntityBase
-        {
-        }
+        protected abstract TIdDocumentRepository CreateRepository();
     }
 }

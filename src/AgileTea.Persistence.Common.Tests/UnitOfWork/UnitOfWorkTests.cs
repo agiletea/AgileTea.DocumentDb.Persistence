@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using AgileTea.Persistence.Common.Contexts;
 using AgileTea.Persistence.Common.Repository;
 using Moq;
@@ -12,7 +13,7 @@ namespace AgileTea.Persistence.Common.Tests.UnitOfWork
         public void GivenAListOfCommands_WhenCommitAsyncIsNotCalled_ContextSaveChangesIsNotCalled()
         {
             // arrange
-            var repository = Mock.Of<IRepository<TestEntity>>();
+            var repository = Mock.Of<IRepository<TestEntity, Guid>>();
             var context = Mock.Of<IDbContext>();
 
             Mock.Get(repository).Setup(x => x.DbContext).Returns(context);
@@ -36,7 +37,7 @@ namespace AgileTea.Persistence.Common.Tests.UnitOfWork
         public async Task GivenAListOfCommands_WhenCommitAsyncIsCalled_ContextSaveChangesIsCalled()
         {
             // arrange
-            var repository = Mock.Of<IRepository<TestEntity>>();
+            var repository = Mock.Of<IRepository<TestEntity, Guid>>();
             var context = Mock.Of<IDbContext>();
 
             Mock.Get(repository).Setup(x => x.DbContext).Returns(context);

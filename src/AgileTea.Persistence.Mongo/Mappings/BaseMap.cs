@@ -1,5 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using AgileTea.Persistence.Common.Entities;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 
 namespace AgileTea.Persistence.Mongo.Mappings
@@ -7,9 +9,19 @@ namespace AgileTea.Persistence.Mongo.Mappings
     [ExcludeFromCodeCoverage]
     internal static class BaseMap
     {
-        public static void Map()
+        public static void MapGuidIndexedEntity()
         {
-            BsonClassMap.RegisterClassMap<IndexedEntityBase>(map =>
+            BsonClassMap.RegisterClassMap<IndexedEntityBase<Guid>>(map =>
+            {
+                map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+                map.MapIdMember(x => x.Id);
+            });
+        }
+
+        public static void MapObjectIdIndexedEntity()
+        {
+            BsonClassMap.RegisterClassMap<IndexedEntityBase<ObjectId>>(map =>
             {
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);

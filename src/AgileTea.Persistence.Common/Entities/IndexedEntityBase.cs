@@ -1,11 +1,10 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace AgileTea.Persistence.Common.Entities
 {
     [ExcludeFromCodeCoverage]
-    public abstract class IndexedEntityBase
+    public abstract class IndexedEntityBase<T>
     {
-        public Guid Id { get; set; }
+        public T Id { get; set; }
     }
 }
