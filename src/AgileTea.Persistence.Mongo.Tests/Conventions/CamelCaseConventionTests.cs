@@ -25,7 +25,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Conventions
             Assert.Equal("salutation", classMap.GetMemberMap(x => x.Salutation).ElementName);
         }
 
-        public class TestClass : IndexedEntityBase
+        public class TestClass : IndexedEntityBase<Guid>
         {
             public string LastName { get; set; } = default!;
             public string FirstNames { get; set; } = default!;

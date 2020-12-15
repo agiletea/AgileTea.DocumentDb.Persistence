@@ -10,22 +10,23 @@ using MongoDB.Driver;
 namespace AgileTea.Persistence.Mongo.Repository
 {
     /// <summary>
-    /// Base class for creating a repository for a given document type
+    /// Base class for creating a repository for a given document type and id type
     /// </summary>
-    /// <typeparam name="TDocument">The type of document where TDocument is a <see cref="AgileTea.Persistence.Common.Entities.IndexedEntityBase"/></typeparam>
-    public class DocumentRepositoryBase<TDocument> : RepositoryBase<TDocument, IMongoContext>
-        where TDocument : IndexedEntityBase
+    /// <typeparam name="TDocument">The type of document where TDocument is a <see cref="IndexedEntityBase{T}"/></typeparam>
+    /// <typeparam name="TId">The type of Id used to identify a document</typeparam>
+    public abstract class DocumentRepositoryBase<TDocument, TId> : RepositoryBase<TDocument, IMongoContext, TId>
+        where TDocument : IndexedEntityBase<TId>
     {
         private readonly IMongoContext context;
         private readonly ILogger logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DocumentRepositoryBase{TDocument}"/> class.
+        /// Initializes a new instance of the <see cref="DocumentRepositoryBase{TDocument,TId}"/> class
         /// </summary>
         /// <param name="context">The Mongo context for accessing the document collection and mongo client</param>
         /// <param name="logger">The logger created within the instantiation of specialised class</param>
         protected DocumentRepositoryBase(IMongoContext context, ILogger logger)
-            : base(context, logger)
+            : base(context)
         {
             this.context = context;
             this.logger = logger;
@@ -45,7 +46,7 @@ namespace AgileTea.Persistence.Mongo.Repository
         /// </summary>
         /// <param name="id">The id of the document</param>
         /// <returns>The document if found within the collection</returns>
-        public override async Task<TDocument> GetByIdAsync(Guid id)
+        public override async Task<TDocument> GetByIdAsync(TId id)
         {
             var result = await ExecuteDbSetFuncAsync(collection => collection.FindAsync(
                 Builders<TDocument>.Filter.Eq("_id", id)))
@@ -58,9 +59,9 @@ namespace AgileTea.Persistence.Mongo.Repository
         /// </summary>
         /// <param name="id">The id of the document</param>
         /// <returns>The document if found within the collection</returns>
-        public override TDocument GetById(Guid id)
+        public override TDocument GetById(TId id)
         {
-            var result = ExecuteDbSetFunc(collection => collection.Find(doc => doc.Id == id));
+            var result = ExecuteDbSetFunc(collection => collection.Find(x => x.Id.Equals(id)));
             return result.SingleOrDefault();
         }
 
@@ -100,13 +101,17 @@ namespace AgileTea.Persistence.Mongo.Repository
         /// Removes a document from the collection
         /// </summary>
         /// <param name="id">The id of the document to be removed</param>
-        public override void Remove(Guid id)
+        public override void Remove(TId id)
         {
             ExecuteDbSetAction((ctx, collection) =>
                 ctx.AddCommand(() => collection.DeleteOneAsync(Builders<TDocument>.Filter.Eq("_id", id))));
         }
 
-        private void ExecuteDbSetAction(Action<IMongoContext, IMongoCollection<TDocument>> action)
+        /// <summary>
+        /// Invokes an action against a given collection
+        /// </summary>
+        /// <param name="action">The action to invoke</param>
+        protected void ExecuteDbSetAction(Action<IMongoContext, IMongoCollection<TDocument>> action)
         {
             var dbSet = GetDbSet();
 
@@ -114,7 +119,13 @@ namespace AgileTea.Persistence.Mongo.Repository
             action.Invoke(context, dbSet!);
         }
 
-        private async Task<TResult> ExecuteDbSetFuncAsync<TResult>(Func<IMongoCollection<TDocument>, Task<TResult>> func)
+        /// <summary>
+        /// Invokes an asynchronous function against a given collection nd returns the result
+        /// </summary>
+        /// <param name="func">The function to invoke</param>
+        /// <typeparam name="TResult">The return value type</typeparam>
+        /// <returns>The result of the function</returns>
+        protected async Task<TResult> ExecuteDbSetFuncAsync<TResult>(Func<IMongoCollection<TDocument>, Task<TResult>> func)
         {
             var dbSet = GetDbSet();
 
@@ -122,7 +133,13 @@ namespace AgileTea.Persistence.Mongo.Repository
             return await func(dbSet!).ConfigureAwait(false);
         }
 
-        private TResult ExecuteDbSetFunc<TResult>(Func<IMongoCollection<TDocument>, TResult> func)
+        /// <summary>
+        /// Invokes a function against a given collection nd returns the result
+        /// </summary>
+        /// <param name="func">The function to invoke</param>
+        /// <typeparam name="TResult">The return value type</typeparam>
+        /// <returns>The result of the function</returns>
+        protected TResult ExecuteDbSetFunc<TResult>(Func<IMongoCollection<TDocument>, TResult> func)
         {
             var dbSet = GetDbSet();
 
@@ -134,7 +151,7 @@ namespace AgileTea.Persistence.Mongo.Repository
         {
             try
             {
-                return context.GetCollection<TDocument>(typeof(TDocument).Name);
+                return context.GetCollection<TDocument>(CollectionName);
             }
             catch (Exception e)
             {

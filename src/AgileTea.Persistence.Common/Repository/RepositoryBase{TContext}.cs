@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using AgileTea.Persistence.Common.Contexts;
-using Microsoft.Extensions.Logging;
 
 namespace AgileTea.Persistence.Common.Repository
 {
@@ -11,28 +10,32 @@ namespace AgileTea.Persistence.Common.Repository
         "StyleCop.CSharp.DocumentationRules",
         "SA1649:File name should match first type name",
         Justification = "File name allows for clarification that this is a generic class")]
-    public abstract class RepositoryBase<TDocument, TContext> : IRepository<TDocument>
+    public abstract class RepositoryBase<TDocument, TContext, TId> : IRepository<TDocument, TId>
         where TContext : IDbContext
         where TDocument : class
     {
-        private readonly ILogger logger;
         private readonly TContext context;
+        private string collectionName;
 
-        protected RepositoryBase(
-            TContext context,
-            ILogger logger)
+        protected RepositoryBase(TContext context)
         {
             this.context = context;
-            this.logger = logger;
+            collectionName = typeof(TDocument).Name;
         }
 
         public IDbContext DbContext => context;
 
+        public virtual string CollectionName
+        {
+            get => collectionName;
+            protected set => collectionName = value;
+        }
+
         public abstract void Add(TDocument document);
 
-        public abstract Task<TDocument> GetByIdAsync(Guid id);
+        public abstract Task<TDocument> GetByIdAsync(TId id);
 
-        public abstract TDocument GetById(Guid id);
+        public abstract TDocument GetById(TId id);
 
         public abstract Task<IEnumerable<TDocument>> GetAllAsync();
 
@@ -40,7 +43,7 @@ namespace AgileTea.Persistence.Common.Repository
 
         public abstract void Update(TDocument document);
 
-        public abstract void Remove(Guid id);
+        public abstract void Remove(TId id);
 
         public void Dispose()
         {

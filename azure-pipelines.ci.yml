@@ -7,7 +7,7 @@
 trigger: none
 
 pr:
- - master
+ - main
 
 # the build will run on a Microsoft hosted agent, using the lastest Windows VM Image
 pool:
@@ -15,19 +15,13 @@ pool:
 
 variables:
   configuration: 'Release'
-  dotnetSdkVersion: '3.1.102'
+  dotnetSdkVersion: '5.0.x'
 
 steps:
 - task: UseDotNet@2
   displayName: 'Use dotnet Core SDk $(dotnetSdkVersion)'
   inputs:
     version: '$(dotnetSdkVersion)'
-
-# sonar requirement - cannot analyse projects built using the dotnet core 3.x sdk so need to downgrade the sdk
-- task: UseDotNet@2
-  displayName: 'Dropping .net core sdk to 2.1.505 for SonarCloud'
-  inputs:
-    version: '2.1.505'
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore sln dependencies'

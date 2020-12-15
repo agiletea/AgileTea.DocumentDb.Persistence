@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using AgileTea.Persistence.Common.Entities;
 using AgileTea.Persistence.Mongo.Client;
@@ -129,7 +128,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Context
                 .Verifiable();
 
             Mock.Get(client)
-                .Setup(x => x.StartSessionAsync(null, default(CancellationToken)))
+                .Setup(x => x.StartSessionAsync(null, default))
                 .ReturnsAsync(sessionHandle)
                 .Verifiable();
 
@@ -161,12 +160,12 @@ namespace AgileTea.Persistence.Mongo.Tests.Context
                 .Verifiable();
 
             Mock.Get(sessionHandle)
-                .Setup(x => x.CommitTransactionAsync(default(CancellationToken)))
+                .Setup(x => x.CommitTransactionAsync(default))
                 .Returns(Task.FromResult(0))
                 .Verifiable();
 
             Mock.Get(client)
-                .Setup(x => x.StartSessionAsync(null, default(CancellationToken)))
+                .Setup(x => x.StartSessionAsync(null, default))
                 .ReturnsAsync(sessionHandle)
                 .Verifiable();
 
@@ -205,7 +204,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Context
             Mock.Get(client).Verify(x => x.StartSessionAsync(null, default), Times.Never);
         }
 
-        public class TestDocument : IndexedEntityBase
+        public class TestDocument : IndexedEntityBase<Guid>
         {
         }
     }
