@@ -32,7 +32,6 @@ namespace AgileTea.Persistence.Mongo.Repository
             this.logger = logger;
         }
 
-
         /// <summary>
         /// Adds a document to its collection
         /// </summary>
