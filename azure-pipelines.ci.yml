@@ -7,7 +7,7 @@
 trigger: none
 
 pr:
- - master
+ - main
 
 # the build will run on a Microsoft hosted agent, using the lastest Windows VM Image
 pool:

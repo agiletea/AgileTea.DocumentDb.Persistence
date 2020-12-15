@@ -7,7 +7,7 @@
 trigger:
   branches:
     include:
-    - master
+    - main
   paths:
     exclude:
     - README.md;azure-pipelines.yml;LICENSE;.gitignore
