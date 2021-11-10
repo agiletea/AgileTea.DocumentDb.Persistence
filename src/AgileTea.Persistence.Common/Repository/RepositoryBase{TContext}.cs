@@ -12,7 +12,7 @@ namespace AgileTea.Persistence.Common.Repository
         Justification = "File name allows for clarification that this is a generic class")]
     public abstract class RepositoryBase<TDocument, TContext, TId> : IRepository<TDocument, TId>
         where TContext : IDbContext
-        where TDocument : class
+        where TDocument : new()
     {
         private readonly TContext context;
         private string collectionName;

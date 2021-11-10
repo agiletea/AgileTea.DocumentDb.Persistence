@@ -10,7 +10,7 @@ namespace AgileTea.Persistence.Common.Repository
         "SA1649:File name should match first type name",
         Justification = "Differentiating generic version of interface")]
     public interface IRepository<TDocument, TId> : IRepository, IDisposable
-        where TDocument : class
+        where TDocument : new()
     {
         void Add(TDocument document);
         Task<TDocument> GetByIdAsync(TId id);

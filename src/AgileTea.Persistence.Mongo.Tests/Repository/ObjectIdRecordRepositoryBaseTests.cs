@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using AgileTea.Persistence.Common.Entities;
+using AgileTea.Persistence.Common.Records;
 using AgileTea.Persistence.Mongo.Context;
 using AgileTea.Persistence.Mongo.Repository;
 using Microsoft.Extensions.Logging;
@@ -8,9 +8,10 @@ using Xunit;
 
 namespace AgileTea.Persistence.Mongo.Tests.Repository
 {
-    public class ObjectIdRepositoryBaseTests : IdRepositoryBaseTests<ObjectId, TestObjectIdRepository, TestObjectIdDocument>
+    public class ObjectIdRecordRepositoryBaseTests : IdRepositoryBaseTests<ObjectId, TestObjectIdRecordRepository, TestObjectIdRecord>
     {
         protected override ObjectId Id => new ("507f1f77bcf86cd799439011");
+
         protected override string ExpectedJsonIdFilter => "{ \"_id\" : ObjectId(\"" + Id + "\") }";
 
         [Fact]
@@ -23,16 +24,16 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
             Assert.Equal("TestCollectionName", repository.CollectionName);
         }
 
-        protected override TestObjectIdRepository CreateRepository()
+        protected override TestObjectIdRecordRepository CreateRepository()
         {
-            return new TestObjectIdRepository(Context, LoggerFactory.CreateLogger<TestObjectIdRepository>());
+            return new TestObjectIdRecordRepository(Context, LoggerFactory.CreateLogger<TestObjectIdRecordRepository>());
         }
     }
 
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Reduces Test file bloat")]
-    public class TestObjectIdRepository : ObjectIdDocumentRepositoryBase<TestObjectIdDocument>
+    public class TestObjectIdRecordRepository : ObjectIdDocumentRecordRepositoryBase<TestObjectIdRecord>
     {
-        public TestObjectIdRepository(IMongoContext context, ILogger logger)
+        public TestObjectIdRecordRepository(IMongoContext context, ILogger logger)
             : base(context, logger)
         {
             CollectionName = "TestCollectionName";
@@ -40,7 +41,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
     }
 
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Reduces Test file bloat")]
-    public class TestObjectIdDocument : IndexedEntityBase<ObjectId>
+    public class TestObjectIdRecord : IndexedRecordBase<ObjectId>
     {
     }
 }

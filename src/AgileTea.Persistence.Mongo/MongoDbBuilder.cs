@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
+using MongoDB.Bson.Serialization.Serializers;
 
 namespace AgileTea.Persistence.Mongo
 {
@@ -71,7 +72,7 @@ namespace AgileTea.Persistence.Mongo
 
         private void RegisterMongo(IOptionsMonitor<MongoOptions> options)
         {
-            BsonDefaults.GuidRepresentation = options.CurrentValue.GuidRepresentation;
+            BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
 
             var pack = new ConventionPack
             {
@@ -89,6 +90,8 @@ namespace AgileTea.Persistence.Mongo
 
             BaseMap.MapGuidIndexedEntity();
             BaseMap.MapObjectIdIndexedEntity();
+            BaseMap.MapGuidIndexedRecord();
+            BaseMap.MapObjectIdIndexedRecord();
         }
     }
 }
