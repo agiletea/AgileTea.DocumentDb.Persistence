@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using AgileTea.Persistence.Common.Entities;
+using AgileTea.Persistence.Common.Interfaces;
 using AgileTea.Persistence.Mongo.Context;
 using AgileTea.Persistence.Mongo.Repository;
 using AgileTea.Persistence.Mongo.Tests.Helpers;
@@ -14,20 +14,23 @@ using Xunit;
 namespace AgileTea.Persistence.Mongo.Tests.Repository
 {
     public abstract class IdRepositoryBaseTests<TId, TIdDocumentRepository, TIdDocument>
-        where TIdDocument : IndexedEntityBase<TId>, new()
+        where TIdDocument : class, IIndexedEntity<TId>, new()
         where TIdDocumentRepository : DocumentRepositoryBase<TIdDocument, TId>
         where TId : new()
     {
-        protected readonly IMongoContext context = Mock.Of<IMongoContext>();
-        protected readonly ILoggerFactory loggerFactory = Mock.Of<ILoggerFactory>();
         private readonly ILogger<TIdDocumentRepository> logger = Mock.Of<ILogger<TIdDocumentRepository>>();
+        private readonly IMongoContext context = Mock.Of<IMongoContext>();
+        private readonly ILoggerFactory loggerFactory = Mock.Of<ILoggerFactory>();
 
         protected IdRepositoryBaseTests()
         {
-            Mock.Get(loggerFactory)
+            Mock.Get(LoggerFactory)
                 .Setup(x => x.CreateLogger(typeof(TIdDocumentRepository).FullName))
                 .Returns(logger);
         }
+
+        protected IMongoContext Context => context;
+        protected ILoggerFactory LoggerFactory => loggerFactory;
 
         protected abstract TId Id { get; }
 
@@ -41,12 +44,12 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
             var expected = new TIdDocument();
             var testCollection = Mock.Of<IMongoCollection<TIdDocument>>();
 
-            Mock.Get(context)
+            Mock.Get(Context)
                 .Setup(x => x.GetCollection<TIdDocument>(target.CollectionName))
                 .Returns(testCollection)
                 .Verifiable();
 
-            Mock.Get(context)
+            Mock.Get(Context)
                 .Setup(x => x.AddCommand(It.IsAny<Func<Task>>()))
                 .Callback(async (Func<Task> func) => { await func.Invoke().ConfigureAwait(false); })
                 .Verifiable();
@@ -60,7 +63,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
             target.Add(expected);
 
             // assert
-            Mock.Verify(Mock.Get(context));
+            Mock.Verify(Mock.Get(Context));
             Mock.Verify(Mock.Get(testCollection));
         }
 
@@ -69,18 +72,18 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
         {
             // arrange
             var target = CreateRepository();
-            var expected = new TIdDocument
-            {
-                Id = Id
-            };
+            var expected = Mock.Of<TIdDocument>();
+
+            Mock.Get(expected).Setup(x => x.Id).Returns(Id);
+
             var testCollection = Mock.Of<IMongoCollection<TIdDocument>>();
 
-            Mock.Get(context)
+            Mock.Get(Context)
                 .Setup(x => x.GetCollection<TIdDocument>(target.CollectionName))
                 .Returns(testCollection)
                 .Verifiable();
 
-            Mock.Get(context)
+            Mock.Get(Context)
                 .Setup(x => x.AddCommand(It.IsAny<Func<Task>>()))
                 .Callback(async (Func<Task> func) => { await func.Invoke().ConfigureAwait(false); })
                 .Verifiable();
@@ -98,7 +101,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
             target.Update(expected);
 
             // assert
-            Mock.Verify(Mock.Get(context));
+            Mock.Verify(Mock.Get(Context));
             Mock.Verify(Mock.Get(testCollection));
         }
 
@@ -108,13 +111,13 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
             // arrange
             var target = CreateRepository();
             var testCollection = Mock.Of<IMongoCollection<TIdDocument>>();
-            
-            Mock.Get(context)
+
+            Mock.Get(Context)
                 .Setup(x => x.GetCollection<TIdDocument>(target.CollectionName))
                 .Returns(testCollection)
                 .Verifiable();
 
-            Mock.Get(context)
+            Mock.Get(Context)
                 .Setup(x => x.AddCommand(It.IsAny<Func<Task>>()))
                 .Callback(async (Func<Task> func) => { await func.Invoke().ConfigureAwait(false); })
                 .Verifiable();
@@ -130,7 +133,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
             target.Remove(Id);
 
             // assert
-            Mock.Verify(Mock.Get(context));
+            Mock.Verify(Mock.Get(Context));
             Mock.Verify(Mock.Get(testCollection));
         }
 
@@ -145,7 +148,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
             int index = 0;
             var expected = new[] { new TIdDocument(), new TIdDocument() };
 
-            Mock.Get(context)
+            Mock.Get(Context)
                 .Setup(x => x.GetCollection<TIdDocument>(target.CollectionName))
                 .Returns(testCollection)
                 .Verifiable();
@@ -175,7 +178,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
 
             // assert
             Assert.Equal(expected, actual);
-            Mock.Verify(Mock.Get(context));
+            Mock.Verify(Mock.Get(Context));
             Mock.Verify(Mock.Get(testCollection));
         }
 
@@ -190,7 +193,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
             int index = 0;
             var expected = new[] { new TIdDocument(), new TIdDocument() };
 
-            Mock.Get(context)
+            Mock.Get(Context)
                 .Setup(x => x.GetCollection<TIdDocument>(target.CollectionName))
                 .Returns(testCollection)
                 .Verifiable();
@@ -220,7 +223,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
 
             // assert
             Assert.Equal(expected, actual);
-            Mock.Verify(Mock.Get(context));
+            Mock.Verify(Mock.Get(Context));
             Mock.Verify(Mock.Get(testCollection));
         }
 
@@ -232,7 +235,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
             var testCollection = Mock.Of<IMongoCollection<TIdDocument>>();
             var findCollection = Mock.Of<IAsyncCursor<TIdDocument>>();
             var expected = new TIdDocument();
-            Mock.Get(context)
+            Mock.Get(Context)
                 .Setup(x => x.GetCollection<TIdDocument>(target.CollectionName))
                 .Returns(testCollection)
                 .Verifiable();
@@ -258,7 +261,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
 
             // assert
             Assert.Equal(expected, actual);
-            Mock.Verify(Mock.Get(context));
+            Mock.Verify(Mock.Get(Context));
             Mock.Verify(Mock.Get(testCollection));
         }
 
@@ -270,7 +273,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
             var testCollection = Mock.Of<IMongoCollection<TIdDocument>>();
             var findCollection = Mock.Of<IAsyncCursor<TIdDocument>>();
             var expected = new TIdDocument();
-            Mock.Get(context)
+            Mock.Get(Context)
                 .Setup(x => x.GetCollection<TIdDocument>(target.CollectionName))
                 .Returns(testCollection)
                 .Verifiable();
@@ -296,7 +299,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
 
             // assert
             Assert.Equal(expected, actual);
-            Mock.Verify(Mock.Get(context));
+            Mock.Verify(Mock.Get(Context));
             Mock.Verify(Mock.Get(testCollection));
         }
 
@@ -305,7 +308,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
         {
             // arrange
             var target = CreateRepository();
-            Mock.Get(context)
+            Mock.Get(Context)
                 .Setup(x => x.GetCollection<TIdDocument>(target.CollectionName))
                 .Throws(new Exception("Test error message"))
                 .Verifiable();
@@ -317,7 +320,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
 
             // assert
             Assert.Equal("Test error message", actual.Message);
-            Mock.Verify(Mock.Get(context));
+            Mock.Verify(Mock.Get(Context));
         }
 
         protected abstract TIdDocumentRepository CreateRepository();

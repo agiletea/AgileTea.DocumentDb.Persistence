@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <CodeAnalysisRuleSet>..\..\CodeAnalysisRuleSet.ruleset</CodeAnalysisRuleSet>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -16,7 +16,7 @@
     <PackageIconUrl></PackageIconUrl>
     <PackageIcon>NugetIcon.png</PackageIcon>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>2.0.0-beta.10</Version>
+    <Version>3.0.0-beta.1</Version>
     <PackageReleaseNotes>
       Added support for Cosmos Db using the MongoDb Api wire protocol.
       Note that enabling this optional suport will disable transactionality for write operations.
@@ -27,30 +27,33 @@ FIXES
       effect on classes for which mappings have been added.
 
 BREAKING CHANGES
-      Due to the above fix the methjod 'RegisterMongo' is no longer public and does not need to be called. 
+      Due to the above fix the method 'RegisterMongo' is no longer public and does not need to be called. 
       Simply remove the call.
       See Readme at https://github.com/agiletea/AgileTea.DocumentDb.Persistence for more details.
-</PackageReleaseNotes>
-    <AssemblyVersion>2.0.0.1</AssemblyVersion>
-    <FileVersion>2.0.0.1</FileVersion>
-    <PackageVersion>2.0.0-beta.10</PackageVersion>
+
+VERSION 3.0 CHANGES (currently beta)
+      Updated to use dotnet 6.0 and added in base 'record' classes to allow their inheritance when using records instead of classes.
+    </PackageReleaseNotes>
+    <AssemblyVersion>3.0.0.1</AssemblyVersion>
+    <FileVersion>3.0.0.1</FileVersion>
+    <PackageVersion>3.0.0-beta.1</PackageVersion>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
-    <PackageReference Include="MongoDB.Bson" Version="2.10.4" />
-    <PackageReference Include="MongoDB.Driver" Version="2.10.4" />
-    <PackageReference Include="MongoDB.Driver.Core" Version="2.10.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+    <PackageReference Include="MongoDB.Bson" Version="2.13.2" />
+    <PackageReference Include="MongoDB.Driver" Version="2.13.2" />
+    <PackageReference Include="MongoDB.Driver.Core" Version="2.13.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.15.0.24505">
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.30.0.37606">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>

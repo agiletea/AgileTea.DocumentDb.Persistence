@@ -34,7 +34,7 @@ namespace AgileTea.Persistence.Mongo.Entities
         /// <summary>
         /// Sets the Timestamp field
         /// </summary>
-        /// <returns>The calculated timestamp value based on current date & time</returns>
+        /// <returns>The calculated timestamp value based on current date and time</returns>
         public BsonTimestamp SetTimestamp()
         {
             var target = DateTime.UtcNow;
@@ -47,6 +47,5 @@ namespace AgileTea.Persistence.Mongo.Entities
         {
             return Timestamp == null ? (DateTime?)null : UnixEpoch.AddSeconds(Timestamp!.Timestamp - 18000);
         }
-
     }
 }

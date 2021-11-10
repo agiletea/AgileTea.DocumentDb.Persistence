@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AgileTea.Persistence.Common.Entities;
+using AgileTea.Persistence.Common.Interfaces;
 using AgileTea.Persistence.Common.Repository;
 using AgileTea.Persistence.Mongo.Context;
 using Microsoft.Extensions.Logging;
@@ -15,7 +16,7 @@ namespace AgileTea.Persistence.Mongo.Repository
     /// <typeparam name="TDocument">The type of document where TDocument is a <see cref="IndexedEntityBase{T}"/></typeparam>
     /// <typeparam name="TId">The type of Id used to identify a document</typeparam>
     public abstract class DocumentRepositoryBase<TDocument, TId> : RepositoryBase<TDocument, IMongoContext, TId>
-        where TDocument : IndexedEntityBase<TId>
+        where TDocument : IIndexedEntity<TId>, new()
     {
         private readonly IMongoContext context;
         private readonly ILogger logger;
