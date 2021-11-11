@@ -16,7 +16,7 @@
     <PackageIconUrl></PackageIconUrl>
     <PackageIcon>NugetIcon.png</PackageIcon>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>3.0.0-beta.1</Version>
+    <Version>3.0.0-beta.2</Version>
     <PackageReleaseNotes>
       Added support for Cosmos Db using the MongoDb Api wire protocol.
       Note that enabling this optional suport will disable transactionality for write operations.
@@ -34,9 +34,9 @@ BREAKING CHANGES
 VERSION 3.0 CHANGES (currently beta)
       Updated to use dotnet 6.0 and added in base 'record' classes to allow their inheritance when using records instead of classes.
     </PackageReleaseNotes>
-    <AssemblyVersion>3.0.0.1</AssemblyVersion>
-    <FileVersion>3.0.0.1</FileVersion>
-    <PackageVersion>3.0.0-beta.1</PackageVersion>
+    <AssemblyVersion>3.0.0.2</AssemblyVersion>
+    <FileVersion>3.0.0.2</FileVersion>
+    <PackageVersion>3.0.0-beta.2</PackageVersion>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
