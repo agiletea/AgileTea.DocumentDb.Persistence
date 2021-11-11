@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace AgileTea.Persistence.Common.Records
 {
     [ExcludeFromCodeCoverage]
-    public abstract class GuidIndexedRecordBase : IndexedRecordBase<Guid>
+    public abstract record GuidIndexedRecordBase : IndexedRecordBase<Guid>
     {
     }
 }

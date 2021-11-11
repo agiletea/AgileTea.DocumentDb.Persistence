@@ -6,7 +6,6 @@ using AgileTea.Persistence.Mongo.Context;
 using AgileTea.Persistence.Mongo.Repository;
 using AgileTea.Persistence.Mongo.Tests.Helpers;
 using Microsoft.Extensions.Logging;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using Moq;
 using Xunit;
@@ -61,44 +60,6 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
 
             // act
             target.Add(expected);
-
-            // assert
-            Mock.Verify(Mock.Get(Context));
-            Mock.Verify(Mock.Get(testCollection));
-        }
-
-        [Fact]
-        public void GivenADocumentRepository_WhenUpdateIsCalled_CollectionIsTakenFromContextAndReplaceOneIsCalled()
-        {
-            // arrange
-            var target = CreateRepository();
-            var expected = Mock.Of<TIdDocument>();
-
-            Mock.Get(expected).Setup(x => x.Id).Returns(Id);
-
-            var testCollection = Mock.Of<IMongoCollection<TIdDocument>>();
-
-            Mock.Get(Context)
-                .Setup(x => x.GetCollection<TIdDocument>(target.CollectionName))
-                .Returns(testCollection)
-                .Verifiable();
-
-            Mock.Get(Context)
-                .Setup(x => x.AddCommand(It.IsAny<Func<Task>>()))
-                .Callback(async (Func<Task> func) => { await func.Invoke().ConfigureAwait(false); })
-                .Verifiable();
-
-            Mock.Get(testCollection)
-                .Setup(x => x.ReplaceOneAsync(
-                    It.Is<FilterDefinition<TIdDocument>>(filter => filter.RenderToJson().Equals(ExpectedJsonIdFilter)),
-                    expected,
-                    It.IsAny<ReplaceOptions>(),
-                    default))
-                .Returns(Task.FromResult((ReplaceOneResult)new ReplaceOneResult.Acknowledged(1L, 1L, new BsonInt64(1L))))
-                .Verifiable();
-
-            // act
-            target.Update(expected);
 
             // assert
             Mock.Verify(Mock.Get(Context));
