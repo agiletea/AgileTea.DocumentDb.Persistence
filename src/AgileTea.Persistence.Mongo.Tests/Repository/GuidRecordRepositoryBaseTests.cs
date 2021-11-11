@@ -58,6 +58,8 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
         {
             return new TestGuidRecordRepository(Context, LoggerFactory.CreateLogger<TestGuidRecordRepository>());
         }
+
+        protected override TestGuidRecord CreateDocument() => new (Id);
     }
 
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Reduces Test file bloat")]
@@ -70,19 +72,6 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
     }
 
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Reduces Test file bloat")]
-    public record TestGuidRecord : IndexedRecordBase<Guid>
-    {
-        private readonly Guid id;
-
-        public TestGuidRecord()
-        {
-        }
-
-        public TestGuidRecord(Guid id)
-        {
-            this.id = id;
-        }
-
-        public override Guid Id => id;
-    }
+    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Not fore record initiation")]
+    public record TestGuidRecord(Guid id) : GuidIndexedRecordBase(id);
 }

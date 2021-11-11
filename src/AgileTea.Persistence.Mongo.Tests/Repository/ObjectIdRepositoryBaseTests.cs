@@ -67,6 +67,8 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
         {
             return new TestObjectIdRepository(Context, LoggerFactory.CreateLogger<TestObjectIdRepository>());
         }
+
+        protected override TestObjectIdDocument CreateDocument() => new ();
     }
 
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Reduces Test file bloat")]

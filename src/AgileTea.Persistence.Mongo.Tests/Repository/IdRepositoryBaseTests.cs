@@ -13,7 +13,7 @@ using Xunit;
 namespace AgileTea.Persistence.Mongo.Tests.Repository
 {
     public abstract class IdRepositoryBaseTests<TId, TIdDocumentRepository, TIdDocument>
-        where TIdDocument : class, IIndexedEntity<TId>, new()
+        where TIdDocument : class, IIndexedEntity<TId>
         where TIdDocumentRepository : DocumentRepositoryBase<TIdDocument, TId>
         where TId : new()
     {
@@ -30,9 +30,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
 
         protected IMongoContext Context => context;
         protected ILoggerFactory LoggerFactory => loggerFactory;
-
         protected abstract TId Id { get; }
-
         protected abstract string ExpectedJsonIdFilter { get; }
 
         [Fact]
@@ -40,7 +38,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
         {
             // arrange
             var target = CreateRepository();
-            var expected = new TIdDocument();
+            var expected = CreateDocument();
             var testCollection = Mock.Of<IMongoCollection<TIdDocument>>();
 
             Mock.Get(Context)
@@ -107,7 +105,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
             var findCollection = Mock.Of<IAsyncCursor<TIdDocument>>();
             const string expectedJsonFilter = "{ }";
             int index = 0;
-            var expected = new[] { new TIdDocument(), new TIdDocument() };
+            var expected = new[] { CreateDocument(), CreateDocument() };
 
             Mock.Get(Context)
                 .Setup(x => x.GetCollection<TIdDocument>(target.CollectionName))
@@ -152,7 +150,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
             var findCollection = Mock.Of<IAsyncCursor<TIdDocument>>();
             const string expectedJsonFilter = "{ }";
             int index = 0;
-            var expected = new[] { new TIdDocument(), new TIdDocument() };
+            var expected = new[] { CreateDocument(), CreateDocument() };
 
             Mock.Get(Context)
                 .Setup(x => x.GetCollection<TIdDocument>(target.CollectionName))
@@ -195,7 +193,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
             var target = CreateRepository();
             var testCollection = Mock.Of<IMongoCollection<TIdDocument>>();
             var findCollection = Mock.Of<IAsyncCursor<TIdDocument>>();
-            var expected = new TIdDocument();
+            var expected = CreateDocument();
             Mock.Get(Context)
                 .Setup(x => x.GetCollection<TIdDocument>(target.CollectionName))
                 .Returns(testCollection)
@@ -233,7 +231,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
             var target = CreateRepository();
             var testCollection = Mock.Of<IMongoCollection<TIdDocument>>();
             var findCollection = Mock.Of<IAsyncCursor<TIdDocument>>();
-            var expected = new TIdDocument();
+            var expected = CreateDocument();
             Mock.Get(Context)
                 .Setup(x => x.GetCollection<TIdDocument>(target.CollectionName))
                 .Returns(testCollection)
@@ -285,5 +283,6 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
         }
 
         protected abstract TIdDocumentRepository CreateRepository();
+        protected abstract TIdDocument CreateDocument();
     }
 }
