@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using AgileTea.Persistence.Common.Contexts;
+using AgileTea.Persistence.Common.Interfaces;
 
 namespace AgileTea.Persistence.Common.Repository
 {
@@ -12,7 +13,7 @@ namespace AgileTea.Persistence.Common.Repository
         Justification = "File name allows for clarification that this is a generic class")]
     public abstract class RepositoryBase<TDocument, TContext, TId> : IRepository<TDocument, TId>
         where TContext : IDbContext
-        where TDocument : new()
+        where TDocument : IIndexedEntity<TId>
     {
         private readonly TContext context;
         private string collectionName;

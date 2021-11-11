@@ -16,7 +16,7 @@ namespace AgileTea.Persistence.Mongo.Repository
     /// <typeparam name="TDocument">The type of document where TDocument is a <see cref="IndexedEntityBase{T}"/></typeparam>
     /// <typeparam name="TId">The type of Id used to identify a document</typeparam>
     public abstract class DocumentRepositoryBase<TDocument, TId> : RepositoryBase<TDocument, IMongoContext, TId>
-        where TDocument : IIndexedEntity<TId>, new()
+        where TDocument : class, IIndexedEntity<TId>
     {
         private readonly IMongoContext context;
         private readonly ILogger logger;

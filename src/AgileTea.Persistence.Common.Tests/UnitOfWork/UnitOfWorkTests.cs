@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AgileTea.Persistence.Common.Contexts;
+using AgileTea.Persistence.Common.Interfaces;
 using AgileTea.Persistence.Common.Repository;
 using Moq;
 using Xunit;
@@ -58,8 +59,9 @@ namespace AgileTea.Persistence.Common.Tests.UnitOfWork
             Mock.Get(context).Verify(x => x.SaveChangesAsync(), Times.Once);
         }
 
-        public class TestEntity
+        public class TestEntity : IIndexedEntity<Guid>
         {
+            public Guid Id { get; set; }
             public string TestProperty { get; set; }
         }
     }

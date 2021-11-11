@@ -10,7 +10,7 @@ namespace AgileTea.Persistence.Mongo.Repository
     /// </summary>
     /// <typeparam name="TDocument">The type of document where TDocument is a <see cref="IndexedEntityBase{T}"/></typeparam>
     public class ObjectIdDocumentRepositoryBase<TDocument> : DocumentRepositoryBase<TDocument, ObjectId>
-        where TDocument : IndexedEntityBase<ObjectId>, new()
+        where TDocument : IndexedEntityBase<ObjectId>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ObjectIdDocumentRepositoryBase{TDocument}"/> class.
