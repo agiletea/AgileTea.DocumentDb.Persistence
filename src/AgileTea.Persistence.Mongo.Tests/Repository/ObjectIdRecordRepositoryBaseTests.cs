@@ -34,7 +34,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
         {
             // arrange
             var target = CreateRepository();
-            var expected = new TestObjectIdRecord(Id);
+            var expected = CreateDocument();
             var testCollection = Mock.Of<IMongoCollection<TestObjectIdRecord>>();
 
             Mock.Get(Context)
@@ -68,6 +68,8 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
         {
             return new TestObjectIdRecordRepository(Context, LoggerFactory.CreateLogger<TestObjectIdRecordRepository>());
         }
+
+        protected override TestObjectIdRecord CreateDocument() => new (Id);
     }
 
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Reduces Test file bloat")]
@@ -81,19 +83,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
     }
 
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Reduces Test file bloat")]
-    public record TestObjectIdRecord : IndexedRecordBase<ObjectId>
-    {
-        private readonly ObjectId id;
-
-        public TestObjectIdRecord()
-        {
-        }
-
-        public TestObjectIdRecord(ObjectId id)
-        {
-            this.id = id;
-        }
-
-        public override ObjectId Id => id;
-    }
+    [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1313:Parameter names should begin with lower-case letter", Justification = "Not with Positional Records")]
+    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Not with Positional Records")]
+    public record TestObjectIdRecord(ObjectId Id) : IndexedRecordBase<ObjectId>(Id);
 }

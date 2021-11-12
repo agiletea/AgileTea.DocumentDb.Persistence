@@ -32,7 +32,7 @@ namespace AgileTea.Persistence.Mongo.Mappings
 
         public static void MapGuidIndexedRecord()
         {
-            BsonClassMap.RegisterClassMap<IndexedRecordBase<Guid>>(map =>
+            BsonClassMap.RegisterClassMap<GuidIndexedRecordBase>(map =>
             {
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);
