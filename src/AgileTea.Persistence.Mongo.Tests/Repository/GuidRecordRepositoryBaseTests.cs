@@ -72,6 +72,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
     }
 
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Reduces Test file bloat")]
-    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Not fore record initiation")]
-    public record TestGuidRecord(Guid id) : GuidIndexedRecordBase(id);
+    [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1313:Parameter names should begin with lower-case letter", Justification = "Not with Positional Records")]
+    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Not with Positional Records")]
+    public record TestGuidRecord(Guid Id) : GuidIndexedRecordBase(Id);
 }

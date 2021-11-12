@@ -34,7 +34,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
         {
             // arrange
             var target = CreateRepository();
-            var expected = new TestObjectIdRecord(Id);
+            var expected = CreateDocument();
             var testCollection = Mock.Of<IMongoCollection<TestObjectIdRecord>>();
 
             Mock.Get(Context)
@@ -83,6 +83,7 @@ namespace AgileTea.Persistence.Mongo.Tests.Repository
     }
 
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Reduces Test file bloat")]
-    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Not for record initiation")]
-    public record TestObjectIdRecord(ObjectId id) : IndexedRecordBase<ObjectId>(id);
+    [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1313:Parameter names should begin with lower-case letter", Justification = "Not with Positional Records")]
+    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Not with Positional Records")]
+    public record TestObjectIdRecord(ObjectId Id) : IndexedRecordBase<ObjectId>(Id);
 }
