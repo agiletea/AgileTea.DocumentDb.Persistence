@@ -72,7 +72,7 @@ namespace AgileTea.Persistence.Mongo
 
         private void RegisterMongo(IOptionsMonitor<MongoOptions> options)
         {
-            BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
+            BsonSerializer.RegisterSerializer(new GuidSerializer(options.CurrentValue.GuidRepresentation));
 
             var pack = new ConventionPack
             {
